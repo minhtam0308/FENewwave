@@ -33,6 +33,7 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 1rem;
+    width: 100%;
 }
 
 .button {
@@ -58,4 +59,34 @@
     color: #667eea;
     text-decoration: none;
     cursor: pointer;
+}
+
+.passwordWrap {
+    position: relative;
+    width: 100%;
+}
+
+.eye {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.spinner {
+    border: 3px solid #fff;
+    border-top: 3px solid transparent;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }

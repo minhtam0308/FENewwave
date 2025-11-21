@@ -1,9 +1,53 @@
 
 import { useNavigate } from 'react-router-dom';
 import classLogin from '../css/Login.module.scss';
+import axios from '../../config/axiosConfig.js'
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 const Login = () => {
     const navigator = useNavigate();
+    const [email, setEmail] = useState("");
+    const [pass, setPass] = useState("");
+    const [showPass, setShowPass] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
+
+    const handleLogin = async () => {
+        if (!email || !pass) {
+            toast.warning('Enter your email and password!');
+            return;
+        }
+        if (!validateEmail(email)) {
+            toast.warning('Email is wrong format!');
+            return;
+        }
+        try {
+            setLoading(true);
+            const token = await axios.post('/api/Auth/login', {
+                email,
+                password: pass
+            });
+            setLoading(false);
+            localStorage.setItem("accessToken", token.accessToken);
+            localStorage.setItem("refreshToken", token.refreshToken);
+            localStorage.setItem("user", JSON.stringify(token.user));
+            navigator('/');
+            // console.log(token);
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+            toast.error(error);
+        }
+
+    }
+
     return (
         <div className={`${classLogin.body}`}>
 
@@ -11,9 +55,40 @@ const Login = () => {
                 <div id="login-form">
                     <h2 className={`${classLogin.h2} `}>Login</h2>
                     <form id="login" className={`${classLogin.form} `}>
-                        <input type="email" placeholder="Email" required className={`${classLogin.input} `} />
-                        <input type="password" placeholder="Password" required className={`${classLogin.input} `} />
-                        <button type="submit" className={`${classLogin.button} `}>Login</button>
+                        <input
+                            type="text"
+                            placeholder="Email"
+                            required
+                            id='id'
+                            className={`${classLogin.input}`}
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value)
+                            }}
+                        />
+                        <div className={classLogin.passwordWrap}>
+                            <input
+                                type={showPass ? "text" : "password"}
+                                placeholder="Password"
+                                required
+                                className={`${classLogin.input}`}
+                                id='null'
+                                value={pass}
+                                onChange={(e) => setPass(e.target.value)}
+                            />
+
+                            <span
+                                className={classLogin.eye}
+                                onClick={() => setShowPass(!showPass)}
+                            >
+                                {showPass ? "🙈" : "👁"}
+                            </span>
+                        </div>
+                        <button
+                            className={`${classLogin.button}`}
+                            onClick={handleLogin}
+                            disabled={loading}
+                        >{loading ? <div className={classLogin.spinner}></div> : "Login"}</button>
                     </form>
                     <div className={`${classLogin.toggle}`}>
                         Don't have an account?
@@ -23,6 +98,14 @@ const Login = () => {
                                 navigator("/signUp")
                             }}
                         >Sign up</span>
+                    </div>
+                    <div className={`${classLogin.toggle}`}>
+                        <span
+                            className={`${classLogin.btn}`}
+                            onClick={() => {
+                                navigator("/")
+                            }}
+                        >Go to homepage</span>
                     </div>
                 </div>
             </div>

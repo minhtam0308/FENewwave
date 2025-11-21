@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './components/general/Login';
 import SignUp from './components/general/SignUp';
 import Home from './components/general/Home';
+import { Bounce, ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -15,7 +16,19 @@ function App() {
         <Route path={'/'} element={<Home />} />
         <Route path={'/home'} element={<Home />} />
       </Routes>
-
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </BrowserRouter>
 
 
