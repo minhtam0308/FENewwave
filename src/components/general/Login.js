@@ -19,7 +19,8 @@ const Login = () => {
             );
     };
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
+        e.preventDefault();
         if (!email || !pass) {
             toast.warning('Enter your email and password!');
             return;
@@ -34,6 +35,10 @@ const Login = () => {
                 email,
                 password: pass
             });
+            if (!token) {
+                toast.error(token.data);
+                return;
+            }
             setLoading(false);
             localStorage.setItem("accessToken", token.accessToken);
             localStorage.setItem("refreshToken", token.refreshToken);
@@ -42,6 +47,7 @@ const Login = () => {
             // console.log(token);
         } catch (error) {
             console.log(error);
+            toast.error(error?.data);
             setLoading(false);
             toast.error(error);
         }
@@ -84,12 +90,14 @@ const Login = () => {
                                 {showPass ? "🙈" : "👁"}
                             </span>
                         </div>
-                        <button
-                            className={`${classLogin.button}`}
-                            onClick={handleLogin}
-                            disabled={loading}
-                        >{loading ? <div className={classLogin.spinner}></div> : "Login"}</button>
+
                     </form>
+                    <button
+                        className={`${classLogin.button}`}
+                        onClick={(e) => handleLogin(e)}
+                        style={{ width: "100%" }}
+                        disabled={loading}
+                    >{loading ? <div className={classLogin.spinner}></div> : "Login"}</button>
                     <div className={`${classLogin.toggle}`}>
                         Don't have an account?
                         <span
