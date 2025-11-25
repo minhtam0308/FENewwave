@@ -19,6 +19,13 @@ const SignUp = () => {
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             );
     };
+    const validateZPassword = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,20})$/
+            );
+    };
 
     const handleSignUp = async () => {
         if (!email || !name || !pass || !confirmPass) {
@@ -32,6 +39,11 @@ const SignUp = () => {
         //pass ch du manh
         if (!validateEmail(email)) {
             toast.warning('Email is wrong!');
+            return;
+        }
+
+        if (!validateZPassword(email)) {
+            toast.warning('password must containt 1 digit, 1 lowercase, 1 uppercase, 1 special character and at least 8 characters and and maximum of 20');
             return;
         }
         try {

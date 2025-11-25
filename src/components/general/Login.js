@@ -53,13 +53,13 @@ const Login = () => {
         }
 
     }
-
+    console.log(process.env.BASE_URL);
     return (
         <div className={`${classLogin.body}`}>
 
             <div className={`${classLogin.container}`}>
                 <div id="login-form">
-                    <h2 className={`${classLogin.h2} `}>Login</h2>
+                    <h2 className={`${classLogin.h2}`}>Login</h2>
                     <form id="login" className={`${classLogin.form} `}>
                         <input
                             type="text"
@@ -93,7 +93,7 @@ const Login = () => {
 
                     </form>
                     <button
-                        className={`${classLogin.button}`}
+                        className={`${classLogin.button} text-center`}
                         onClick={(e) => handleLogin(e)}
                         style={{ width: "100%" }}
                         disabled={loading}

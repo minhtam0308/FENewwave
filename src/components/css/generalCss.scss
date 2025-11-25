@@ -1,0 +1,54 @@
+        :root {
+            --primary: #1fb911;
+            --secondary: #f8fafc;
+            --accent: #e2e8f0;
+            --text: #1e293b;
+            --error: #ef4444;
+            --success: #10b981;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+
+        a {
+            text-decoration: none;
+            color: aliceblue;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--accent);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            .book-image {
+                width: 50px;
+                height: 65px;
+            }
+        }

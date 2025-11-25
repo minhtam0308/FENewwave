@@ -12,15 +12,22 @@ import BookManage from './components/admin/BookManage';
 
 function App() {
   if (localStorage.user) {
-    setInterval(async () => {
-      let resfreshToken = await axios.post(`/api/Auth/refresh-token`,
-        { UserId: JSON.parse(localStorage.getItem("user")).id, RefreshToken: localStorage.getItem("refreshToken") });
-      if (resfreshToken) {
-        localStorage.setItem("accessToken", resfreshToken.accessToken);
-        localStorage.setItem("refreshToken", resfreshToken.refreshToken);
-        localStorage.setItem("user", JSON.stringify(resfreshToken.user));
-      }
-    }, 50000);
+    try {
+      setInterval(async () => {
+        let resfreshToken = await axios.post(`/api/Auth/refresh-token`,
+          { UserId: JSON.parse(localStorage.getItem("user")).id, RefreshToken: localStorage.getItem("refreshToken") });
+        if (resfreshToken) {
+          localStorage.setItem("accessToken", resfreshToken.accessToken);
+          localStorage.setItem("refreshToken", resfreshToken.refreshToken);
+          localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+        }
+      }, 540000);
+    } catch (e) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+    }
+
   }
 
   return (
@@ -30,8 +37,8 @@ function App() {
         <Route path={'/login'} element={<Login />} />
         <Route path={'/signup'} element={<SignUp />} />
         <Route path={'/'} element={<Home />} >
-          <Route path={'/manage-author'} element={<AuthorManage />} />
-          <Route path={'/manage-book'} element={<BookManage />} />
+          <Route path={'/manage-authors'} element={<AuthorManage />} />
+          <Route path={'/manage-books'} element={<BookManage />} />
           <Route index element={<HomeContent />} />
 
         </Route>

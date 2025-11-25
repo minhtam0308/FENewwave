@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from '../../config/axiosConfig.js';
+import ClassBook from '../css/BookManage.module.scss'
+import '../css/generalCss.scss'
+import { Button, Modal, Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import ConvertTosBase64Handle from "../../commonHandle/ConvertTosBase64Handle.js";
 
 const BookManage = () => {
     const [listAuthor, setListAuthor] = useState();
@@ -7,15 +12,27 @@ const BookManage = () => {
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [des, setDes] = useState("");
-    const [total, setTotal] = useState(0);
-    const [available, setAvailable] = useState(0);
+    const [total, setTotal] = useState();
+
     const [image, setImage] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const [showModalCreateBook, setShowModalCreateBook] = useState(false);
+
+    const handleCloseModalCreateBook = () => {
+        setShowModalCreateBook(false);
+        setTitle("");
+        setAuthor("");
+        setDes("");
+        setTotal();
+        setImage("");
+    }
 
     useEffect(() => {
         const getAllAuthor = async () => {
             try {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
-                console.log(allAuthor);
+                // console.log(allAuthor);
                 setListAuthor(allAuthor);
                 setAuthor(allAuthor[0]?.id);
             } catch (e) {
@@ -32,158 +49,191 @@ const BookManage = () => {
     }
 
     const handleAddBook = async () => {
-        const bookinfor = {
-            Title: title,
-            IdAuthor: author,
-            Description: des,
-            TotalCopies: total,
-            AvailableCopies: available,
-            ImageBook: image
+        if (!title || !author || !total) {
+            toast.warning("Fill title, author and totalcopies");
+            return;
         }
-        console.log(bookinfor);
+        let UrlBook = "";
+        if (image) {
+            let form = new FormData();
+            form.append("file", image);
+            const resultCreateImage = await axios.post(`/api/Image/postCreateImage`, form, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            });
+            if (resultCreateImage?.ec !== 0) {
+                toast.error(resultCreateImage?.em);
+                return;
+            } else {
+                UrlBook = resultCreateImage.em
+            }
+        }
+
+        const bookinfor = {
+            title: title,
+            description: des,
+            idAuthor: author,
+            totalCopies: total,
+            urlBook: UrlBook
+        }
+        const resultCreateImage = await axios.post(`/api/Book/postCreateBook`, bookinfor);
+        if (resultCreateImage?.ec === 0) {
+            toast.success(resultCreateImage?.em);
+            handleCloseModalCreateBook();
+        } else {
+            toast.error(resultCreateImage?.em);
+            return;
+        }
     }
-    return (<div class="container mt-5">
-        <h1 class="text-center mb-4">Book Manage</h1>
-
-
-        <div class="card mb-5">
-            <div class="card-header">
-                <h5>Add/Edit Books</h5>
-            </div>
-            <div class="card-body">
-                <form id="bookForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label for="title" class="form-label">Title:</label>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    id="title"
-                                    value={title}
-                                    onChange={(e) => {
-                                        setTitle(e.target.value);
-                                    }}
-                                />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-3">
-                                <label
-                                    for="author"
-                                    class="form-label"
-                                    onChange={(e) => {
-                                        setAuthor(e.target.value);
-                                    }}
-                                >Author:</label>
-                                <select class="form-control" id="author" >
-                                    {listAuthor?.map((val, index) => {
-                                        return (
-                                            <option key={`indexa${index}`} value={val.id}>{val.nameAuthor}</option>
-
-                                        )
-                                    })}
-
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label class="form-label">Description:</label>
-                        <textarea
-                            class="form-control"
-                            id="description"
-                            rows="3"
-                            value={des}
-                            onChange={(e) => {
-                                setDes(e.target.value);
-                            }}
-                        ></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group mb-3">
-                                <label class="form-label">TotalCopies:</label>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="totalCopies"
-                                    min="1"
-                                    value={total}
-                                    onChange={(e) => {
-                                        setTotal(e.target.value);
-                                    }}
-                                />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group mb-3">
-                                <label class="form-label">AvailableCopies:</label>
-                                <input
-                                    type="number"
-                                    class="form-control"
-                                    id="availableCopies"
-                                    min="0"
-                                    value={available}
-                                    onChange={(e) => {
-                                        setAvailable(e.target.value);
-                                    }}
-                                />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group mb-3 text-center">
-                                <label htmlFor="image" class="form-label btn btn-primary">Add Image</label>
-                                <input
-                                    type="file"
-                                    class="form-control"
-                                    id="image" accept="image/*"
-                                    hidden
-                                    onChange={(e) => {
-                                        handleChangImage(e)
-                                    }}
-                                />
-                            </div>
-                        </div>
-                        <div class="col-md-3 border">
-                            <div class="form-group mb-3">
-                                <img src="" />
-                            </div>
-                        </div>
-                    </div>
-                </form>
+    return (<div className={`${ClassBook.container} container mt-5`}>
+        <div className={`${ClassBook.container} container`}>
+            <h1><i className="fas fa-book"></i> Book Manager</h1>
+            <div className={`${ClassBook.controls}`}>
+                <div className={`${ClassBook.searchBar}`}>
+                    <input className={`${ClassBook.input} mb-2`} type="text" id="search" placeholder="Search books..." oninput="filterBooks()" />
+                </div>
                 <button
-                    class="btn btn-primary"
+                    className={`${ClassBook.button}`}
+                    onClick={() => {
+                        setShowModalCreateBook(true);
+                    }}
+                ><i className={`fas fa-plus`}></i> Add Book</button>
+            </div>
+            <table id={`${ClassBook.bookTable}`}>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Year</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><img src="${book.image}" alt="${book.title}" className="book-image" /></td>
+                        <td>asdas</td>
+                        <td>asd</td>
+                        <td>asdasd</td>
+                        <td className={`${ClassBook.actions}`}>
+                            <button className={`${ClassBook.button} ${ClassBook.editBtn} `} onclick="openModal(${index})"><i className="bi bi-pencil-square"></i> Edit</button>
+                            <button className={` ${ClassBook.button} ${ClassBook.deleteBtn}`} onclick="deleteBook(${index})"><i className="bi bi-trash"></i> Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <Modal
+            show={showModalCreateBook}
+            onHide={handleCloseModalCreateBook}
+            backdrop="static"
+            keyboard={false}
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>Crate new Book</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <div className="mb-3">
+                    <label className="form-label">Title</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="title"
+                        value={title}
+                        onChange={(e) => {
+                            setTitle(e.target.value)
+                        }}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Description</label>
+                    <textarea
+                        shape="text"
+                        type="text"
+                        className="form-control"
+                        id="author"
+                        value={des}
+                        onChange={(e) => {
+                            setDes(e.target.value);
+                        }} />
+                </div>
+
+                <div className="mb-3">
+                    <label className="form-label">Author</label>
+                    <select className="form-select" id="genre"
+                        value={author}
+                        onChange={(e) => {
+                            setAuthor(e.target.value);
+                        }
+                        }
+                    >
+                        {listAuthor?.map((val, index) => {
+                            return (
+                                <option value={val.id} key={`indexval${index}`}>{`${val.nameAuthor} ( ${val.id} )`}</option>
+
+                            )
+                        })}
+                    </select>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Total Books</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        id="title"
+                        value={total}
+                        onChange={(e) => {
+                            setTotal(e.target.value)
+                        }}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="isbn" className="form-label btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Image</label>
+                    <input
+                        type="file"
+                        className="form-control"
+                        id="isbn" hidden
+                        onChange={async (e) => {
+                            setImage(e.target.files[0]);
+                        }}
+                    />
+
+                    {image &&
+                        <div className="text-center">
+                            <img src={URL.createObjectURL(image)} alt="book" className="book-image"
+                                style={{ width: "200px", height: "100px", borderRadius: "5px", objectFit: "cover" }} />
+                        </div>
+                    }
+                </div>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseModalCreateBook}>
+                    Close
+                </Button>
+                <Button
+                    variant="primary"
+                    disabled={loading}
                     onClick={handleAddBook}
-                >Thêm Sách</button>
-            </div>
-        </div>
-
-
-        <div class="card mb-5">
-            <div class="card-header">
-                <h5>Danh sách Sách</h5>
-            </div>
-            <div class="card-body">
-                <table class="table table-striped table-bordered" id="bookTable">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Description</th>
-                            <th>TotalCopies</th>
-                            <th>AvailableCopies</th>
-                            <th>Image</th>
-                            <th>CreatedAt</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                >
+                    {loading ? (
+                        <>
+                            <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                className="me-2"
+                            />
+                            Loading...
+                        </>
+                    ) : (
+                        "Add book"
+                    )}
+                </Button>
+            </Modal.Footer>
+        </Modal>
     </div>)
 }
 
