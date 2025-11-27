@@ -41,8 +41,13 @@ const AuthorManage = () => {
         const getAllAuthor = async () => {
             try {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
-                console.log(allAuthor);
-                setListAuthor(allAuthor);
+                if (allAuthor?.ec === 0) {
+
+                    // console.log(allAuthor?.em);
+                    setListAuthor(allAuthor?.em);
+                    return;
+                }
+                toast.error(allAuthor?.em);
             } catch (e) {
                 console.log(e);
             }

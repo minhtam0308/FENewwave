@@ -7,7 +7,7 @@ const instance = axios.create({
 });
 
 // Alter defaults after instance has been created
-
+let isFresh = true;
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
   const token = localStorage.getItem('accessToken');
@@ -23,60 +23,81 @@ instance.interceptors.request.use(function (config) {
 
 // Add a response interceptor
 instance.interceptors.response.use(function (response) {
-  // Any status code that lie within the range of 2xx cause this function to trigger
-  // Do something with response data
-
   return response?.data;
 }, async function (error) {
-  // Any status codes that falls outside the range of 2xx cause this function to trigger
   if (error?.response?.status === 401) {
-
-    await handleRefreshToken(error.config.status, error.config.url);
-
-
+    // console.log(error);
+    const againAPI = await handleRefreshToken(error);
+    return againAPI;
   }
-  // Do something with response error
-  return Promise.reject(error?.response);
+  return Promise.resolve({ ec: 1, em: error?.code, status: error?.response?.status });
 });
 
-const handleRefreshToken = async (method, url) => {
-  let isFresh = true;
+const handleRefreshToken = async (error) => {
+
   if (isFresh) {
     try {
       const resfreshToken = await instance.post(`/api/Auth/refresh-token`,
         { UserId: JSON.parse(localStorage.getItem("user")).id, RefreshToken: localStorage.getItem("refreshToken") });
-      if (resfreshToken) {
+      if (resfreshToken?.ec === 2) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        return {
+          ec: 2,
+          em: "You need to log in again"
+        }
+      } else {
         localStorage.setItem("accessToken", resfreshToken.accessToken);
         localStorage.setItem("refreshToken", resfreshToken.refreshToken);
         localStorage.setItem("user", JSON.stringify(resfreshToken.user));
       }
-      // try {
-      // const response = await fetch('https://localhost:7118/'+url, {
-      //   method: method, // Phương thức HTTP (POST, GET, PUT...)
-      //   headers: {
-      //     'Content-Type': 'application/json', // Định dạng dữ liệu là JSON
-      //     'Authorization': resfreshToken.accessToken, // Token nếu cần
-      //   },
-      //   body: JSON.stringify({ // Dữ liệu bạn muốn gửi trong body request
-      //     name: 'John Doe',
-      //     email: 'john.doe@example.com'
-      //   })
-      // });
+      //send request before
+      try {
+        console.log("test", error);
+        let response;
+        if (error.config.method !== 'get' && error.config.method !== 'delete') {
+          const contentType = error.config.headers['Content-Type'];
+          let requestData;
+          if (contentType && contentType.includes('multipart/form-data')) {
+            requestData = error.config.data;
+          } else {
+            requestData = JSON.parse(error.config.data);
+          }
+          response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
+            requestData,
+            {
+              headers: { ...error.config.headers, Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+            }
+          );
 
-      // if (!response.ok) {
-      //   throw new Error('Network response was not ok');
-      // }
-
-      //   const data = await response.json(); // Chuyển dữ liệu trả về thành JSON
-      //   console.log('Dữ liệu trả về:', data); // Hiển thị dữ liệu trả về từ server
-      // } catch (error) {
-      //   console.error('Lỗi:', error); // Xử lý lỗi nếu có
-      // }
+        } else {
+          response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
+            {
+              headers: { ...error.config.headers, Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+              params: error.config.params
+            }
+          );
+        }
+        return response;
+      } catch (error) {
+        console.error('Lỗi:', error); // Xử lý lỗi nếu có
+        isFresh = false;
+        return {
+          ec: 2,
+          em: "You data error inner"
+        }
+      }
     } catch (e) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
       isFresh = false;
+      window.location.href = 'http://localhost:3000/';
+      return {
+        ec: 2,
+        em: "You need to to login again"
+      }
     }
 
   }

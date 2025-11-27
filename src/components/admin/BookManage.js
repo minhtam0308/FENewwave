@@ -5,6 +5,8 @@ import '../css/generalCss.scss'
 import { Button, Modal, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import ConvertTosBase64Handle from "../../commonHandle/ConvertTosBase64Handle.js";
+import EditBookModal from "./ModalOfBookManage/EditBookModal.js";
+import DeleteBookModal from "./ModalOfBookManage/DeleteBookModal.js";
 
 const BookManage = () => {
     const [listAuthor, setListAuthor] = useState();
@@ -19,6 +21,17 @@ const BookManage = () => {
 
     const [showModalCreateBook, setShowModalCreateBook] = useState(false);
 
+    const [showModalEditBook, setShowModalEditBook] = useState(false);
+    const [editValue, setEditValue] = useState({});
+
+    const [showModalDelBook, setShowModalDelBook] = useState(false);
+    const [delValue, setDetDelVal] = useState({});
+
+
+    const [listBook, setListBook] = useState([]);
+    const [listImage, setListImage] = useState({});
+
+
     const handleCloseModalCreateBook = () => {
         setShowModalCreateBook(false);
         setTitle("");
@@ -29,27 +42,71 @@ const BookManage = () => {
     }
 
     useEffect(() => {
-        const getAllAuthor = async () => {
+        const getAllBook = async () => {
             try {
-                const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
-                // console.log(allAuthor);
-                setListAuthor(allAuthor);
-                setAuthor(allAuthor[0]?.id);
+                const allBook = await axios.get(`/api/Book/getAllBook`);
+                // console.log("allbook", allBook);
+                if (allBook?.ec === 0) {
+                    setListBook(allBook?.em);
+                    return;
+                }
+                setListBook([]);
+                toast.error("Cannot get data");
+
             } catch (e) {
                 console.log(e);
             }
+        }
+        const getAllAuthor = async () => {
+            try {
+                const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
+                // console.log("auythor", allAuthor);
+                if (allAuthor?.ec === 0) {
+                    setListAuthor(allAuthor?.em);
+                    setAuthor(allAuthor.em[0]?.id);
+                    return;
+                }
+                toast.error(allAuthor?.em);
+                setListAuthor([]);
 
+            } catch (e) {
+                console.log(e);
+            }
         }
         getAllAuthor();
-
+        getAllBook();
     }, [reload]);
 
-    const handleChangImage = () => {
+    useEffect(() => {
+        const getImage = async (idImage) => {
+            try {
+                const resultImage = await axios.get(`/api/Image/getImage?idImage=${idImage}`, { responseType: "blob" });
+                // console.log(resultImage);
+                if (listImage[idImage]) {
+                    URL.revokeObjectURL(listImage[idImage]);
+                }
+                setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
 
-    }
+
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        const getAllImage = async () => {
+            for (let bookInfor of listBook) {
+                if (bookInfor.urlBook) {
+                    await getImage(bookInfor.urlBook);
+                }
+            }
+        }
+        getAllImage();
+
+    }, [listBook])
+
 
     const handleAddBook = async () => {
         if (!title || !author || !total) {
+            // console.log(title, author, total);
             toast.warning("Fill title, author and totalcopies");
             return;
         }
@@ -81,12 +138,14 @@ const BookManage = () => {
         if (resultCreateImage?.ec === 0) {
             toast.success(resultCreateImage?.em);
             handleCloseModalCreateBook();
+            setReload(!reload);
         } else {
             toast.error(resultCreateImage?.em);
             return;
         }
     }
-    return (<div className={`${ClassBook.container} container mt-5`}>
+    console.log(listBook);
+    return (<div className={`${ClassBook.container} container mt-5 mb-3`}>
         <div className={`${ClassBook.container} container`}>
             <h1><i className="fas fa-book"></i> Book Manager</h1>
             <div className={`${ClassBook.controls}`}>
@@ -100,27 +159,55 @@ const BookManage = () => {
                     }}
                 ><i className={`fas fa-plus`}></i> Add Book</button>
             </div>
-            <table id={`${ClassBook.bookTable}`}>
+            <table id={`${ClassBook.bookTable} mb-3`}>
                 <thead>
                     <tr>
                         <th>Image</th>
                         <th>Title</th>
                         <th>Author</th>
-                        <th>Year</th>
+                        <th>Description</th>
+                        <th>Total copies</th>
+                        <th>Available copies</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td><img src="${book.image}" alt="${book.title}" className="book-image" /></td>
-                        <td>asdas</td>
-                        <td>asd</td>
-                        <td>asdasd</td>
-                        <td className={`${ClassBook.actions}`}>
-                            <button className={`${ClassBook.button} ${ClassBook.editBtn} `} onclick="openModal(${index})"><i className="bi bi-pencil-square"></i> Edit</button>
-                            <button className={` ${ClassBook.button} ${ClassBook.deleteBtn}`} onclick="deleteBook(${index})"><i className="bi bi-trash"></i> Delete</button>
-                        </td>
-                    </tr>
+                    {listBook?.map((val, index) => {
+                        // console.log("val", listImage[val.image])
+                        return (
+                            <tr key={`book${index}`}>
+                                <td><img
+                                    src={listImage[val.urlBook]}
+                                    alt="have no image"
+                                    className="book-image img-thumbnail"
+                                    style={{ width: "200px", height: "100px" }}
+                                /></td>
+                                <td>{val.title}</td>
+                                <td>{val.nameAuthor}</td>
+                                <td>{val.description}</td>
+                                <td>{val.totalCopies}</td>
+                                <td>{val.availableCopies}</td>
+                                <td>
+                                    <div className={`${ClassBook.actions}`}>
+                                        <button className={`${ClassBook.button} ${ClassBook.editBtn} `}
+                                            onClick={() => {
+                                                setShowModalEditBook(true);
+                                                setEditValue(val);
+
+                                            }}
+                                        ><i className="bi bi-pencil-square"></i> Edit</button>
+                                        <button className={` ${ClassBook.button} ${ClassBook.deleteBtn}`}
+                                            onClick={() => {
+                                                setShowModalDelBook(true);
+                                                setDetDelVal(val);
+                                            }}
+
+                                        ><i className="bi bi-trash"></i> Delete</button>
+                                    </div>
+                                </td>
+                            </tr>)
+                    })}
+
                 </tbody>
             </table>
         </div>
@@ -190,7 +277,7 @@ const BookManage = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="isbn" className="form-label btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Image</label>
+                    <label htmlFor="isbn" className="form-label btn btn-primary"><i className="bi bi-plus-circle me-2"></i>Image</label>
                     <input
                         type="file"
                         className="form-control"
@@ -234,6 +321,24 @@ const BookManage = () => {
                 </Button>
             </Modal.Footer>
         </Modal>
+        <EditBookModal
+            show={showModalEditBook}
+            setShow={setShowModalEditBook}
+            editValue={editValue}
+            reload={reload}
+            setReload={setReload}
+            listAuthor={listAuthor}
+            imageEdit={listImage[editValue.urlBook]}
+        />
+        <DeleteBookModal
+            show={showModalDelBook}
+            setShow={setShowModalDelBook}
+            delValue={delValue}
+            imageDel={listImage[delValue.urlBook]}
+            reload={reload}
+            setReload={setReload}
+        />
+
     </div>)
 }
 

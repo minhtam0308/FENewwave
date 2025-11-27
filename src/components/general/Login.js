@@ -34,16 +34,21 @@ const Login = () => {
             const token = await axios.post('/api/Auth/login', {
                 email,
                 password: pass
+            }, {
+                withCredentials: true
             });
-            if (!token) {
-                toast.error(token.data);
+            if (token?.ec === 0) {
+                setLoading(false);
+                // localStorage.setItem("accessToken", token.accessToken);
+                // localStorage.setItem("refreshToken", token.refreshToken);
+                // localStorage.setItem("user", JSON.stringify(token.user));
+                navigator('/');
                 return;
+
             }
+            toast.error(token?.em);
             setLoading(false);
-            localStorage.setItem("accessToken", token.accessToken);
-            localStorage.setItem("refreshToken", token.refreshToken);
-            localStorage.setItem("user", JSON.stringify(token.user));
-            navigator('/');
+            return;
             // console.log(token);
         } catch (error) {
             console.log(error);

@@ -9,26 +9,33 @@ import AuthorManage from './components/admin/AuthorManage';
 import HomeContent from './components/general/HomeContent';
 import axios from './config/axiosConfig.js'
 import BookManage from './components/admin/BookManage';
+import { useEffect } from 'react';
 
 function App() {
-  if (localStorage.user) {
-    try {
-      setInterval(async () => {
-        let resfreshToken = await axios.post(`/api/Auth/refresh-token`,
-          { UserId: JSON.parse(localStorage.getItem("user")).id, RefreshToken: localStorage.getItem("refreshToken") });
-        if (resfreshToken) {
-          localStorage.setItem("accessToken", resfreshToken.accessToken);
-          localStorage.setItem("refreshToken", resfreshToken.refreshToken);
-          localStorage.setItem("user", JSON.stringify(resfreshToken.user));
-        }
-      }, 540000);
-    } catch (e) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
+  if (localStorage.getItem("user")) {
+    let refresh = true;
+    if (refresh) {
+      try {
+        setInterval(async () => {
+          let resfreshToken = await axios.post(`/api/Auth/refresh-token`,
+            { UserId: JSON.parse(localStorage.getItem("user")).id, RefreshToken: localStorage.getItem("refreshToken") });
+          if (resfreshToken.accessToken) {
+            localStorage.setItem("accessToken", resfreshToken.accessToken);
+            localStorage.setItem("refreshToken", resfreshToken.refreshToken);
+            localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+          }
+        }, 540000);
+      } catch (e) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        refresh(false);
+      }
     }
 
+
   }
+
 
   return (
 

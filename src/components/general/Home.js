@@ -22,7 +22,7 @@ const Home = () => {
         handleCloseModalLogout();
     }
     useEffect(() => {
-        if (localStorage.getItem("user")) {
+        if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
             setUser(JSON.parse(localStorage.getItem("user")));
         }
     }, [localStorage])
