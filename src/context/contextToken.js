@@ -1,13 +1,11 @@
-import { Children, createContext, useContext, useState } from 'react';
 
-const AuthContext = createContext(null);
 
-const [token, setToken] = useState("");
+let token = "";
 
-export default function MyApp() {
-    return (
-        <AuthContext value={{ token, setToken }}>
-            {Children}
-        </AuthContext>
-    )
+export const getToken = () => {
+    return token;
+}
+
+export const setToekn = (valToken) => {
+    token = valToken;
 }

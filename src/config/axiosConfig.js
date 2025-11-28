@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getToken, setToekn } from "../context/contextToken";
 
 
 
@@ -10,11 +11,11 @@ const instance = axios.create({
 let isFresh = true;
 // Add a request interceptor
 instance.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('accessToken');
   // Do something before request is sent
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+
+  config.headers.Authorization = `Bearer ${getToken()}`;
+  // console.log(getToken())
+
   return config;
 }, function (error) {
   // Do something with request error
@@ -37,19 +38,21 @@ const handleRefreshToken = async (error) => {
 
   if (isFresh) {
     try {
-      const resfreshToken = await instance.post(`/api/Auth/refresh-token`,
-        { UserId: JSON.parse(localStorage.getItem("user")).id, RefreshToken: localStorage.getItem("refreshToken") });
+      //send refresh reques
+      const resfreshToken = await instance.post(`/api/Auth/refresh-token`, {},
+        {
+          //sendc ookies
+          withCredentials: true
+        });
+      //if infor is incorrect
       if (resfreshToken?.ec === 2) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
         return {
           ec: 2,
           em: "You need to log in again"
         }
       } else {
-        localStorage.setItem("accessToken", resfreshToken.accessToken);
-        localStorage.setItem("refreshToken", resfreshToken.refreshToken);
+        setToekn(resfreshToken.em);
         localStorage.setItem("user", JSON.stringify(resfreshToken.user));
       }
       //send request before
@@ -58,23 +61,25 @@ const handleRefreshToken = async (error) => {
         let response;
         if (error.config.method !== 'get' && error.config.method !== 'delete') {
           const contentType = error.config.headers['Content-Type'];
+          //config data 
           let requestData;
           if (contentType && contentType.includes('multipart/form-data')) {
             requestData = error.config.data;
           } else {
             requestData = JSON.parse(error.config.data);
           }
+          //send request
           response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
             requestData,
             {
-              headers: { ...error.config.headers, Authorization: `Bearer ${localStorage.getItem('accessToken')}` }
+              // headers: { ...error.config.headers, Authorization: `Bearer ${getToken()}` }
             }
           );
 
         } else {
           response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
             {
-              headers: { ...error.config.headers, Authorization: `Bearer ${localStorage.getItem('accessToken')}` },
+              // headers: { ...error.config.headers, Authorization: `Bearer ${getToken()}` },
               params: error.config.params
             }
           );
@@ -89,8 +94,6 @@ const handleRefreshToken = async (error) => {
         }
       }
     } catch (e) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
       localStorage.removeItem("user");
       isFresh = false;
       window.location.href = 'http://localhost:3000/';

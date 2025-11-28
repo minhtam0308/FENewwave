@@ -10,31 +10,47 @@ import HomeContent from './components/general/HomeContent';
 import axios from './config/axiosConfig.js'
 import BookManage from './components/admin/BookManage';
 import { useEffect } from 'react';
+import { getToken, setToekn } from './context/contextToken.js';
+import ViewDetailBook from './components/user/ViewDetailBook.js';
+import ProfileUser from './components/user/ProfileUser.js';
 
 function App() {
-  if (localStorage.getItem("user")) {
-    let refresh = true;
-    if (refresh) {
-      try {
-        setInterval(async () => {
-          let resfreshToken = await axios.post(`/api/Auth/refresh-token`,
-            { UserId: JSON.parse(localStorage.getItem("user")).id, RefreshToken: localStorage.getItem("refreshToken") });
-          if (resfreshToken.accessToken) {
-            localStorage.setItem("accessToken", resfreshToken.accessToken);
-            localStorage.setItem("refreshToken", resfreshToken.refreshToken);
-            localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+  let isFresh = true;
+
+  if (isFresh) {
+    try {
+      setInterval(async () => {
+        let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
+          {
+            withCredentials: true
           }
-        }, 540000);
-      } catch (e) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        localStorage.removeItem("user");
-        refresh(false);
-      }
+        );
+        if (resfreshToken?.ec === 0) {
+          setToekn(resfreshToken.em);
+          localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+        }
+      }, 540000);
+    } catch (e) {
+      console.log(e);
+      localStorage.removeItem("user");
+      isFresh = false;
     }
-
-
   }
+
+  // useEffect(() => {
+  //   const reload = async () => {
+  //     let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
+  //       {
+  //         withCredentials: true
+  //       }
+  //     );
+  //     if (resfreshToken?.ec === 0) {
+  //       setToekn(resfreshToken.em);
+  //       localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+  //     }
+  //   }
+  //   reload();
+  // }, [])
 
 
   return (
@@ -46,6 +62,8 @@ function App() {
         <Route path={'/'} element={<Home />} >
           <Route path={'/manage-authors'} element={<AuthorManage />} />
           <Route path={'/manage-books'} element={<BookManage />} />
+          <Route path={'/view-detailbook'} element={<ViewDetailBook />} />
+          <Route path={'/profile-user'} element={<ProfileUser />} />
           <Route index element={<HomeContent />} />
 
         </Route>

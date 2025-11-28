@@ -31,6 +31,10 @@ const BookManage = () => {
     const [listBook, setListBook] = useState([]);
     const [listImage, setListImage] = useState({});
 
+    const [keySearch, setKeySearch] = useState('');
+    const listBookFilter = listBook.filter(b => b.title.toLowerCase().includes(keySearch.toLowerCase())
+        || b.nameAuthor.toLowerCase().includes(keySearch.toLowerCase()));
+
 
     const handleCloseModalCreateBook = () => {
         setShowModalCreateBook(false);
@@ -144,13 +148,21 @@ const BookManage = () => {
             return;
         }
     }
-    console.log(listBook);
+    // console.log(listBook);
     return (<div className={`${ClassBook.container} container mt-5 mb-3`}>
         <div className={`${ClassBook.container} container`}>
             <h1><i className="fas fa-book"></i> Book Manager</h1>
             <div className={`${ClassBook.controls}`}>
                 <div className={`${ClassBook.searchBar}`}>
-                    <input className={`${ClassBook.input} mb-2`} type="text" id="search" placeholder="Search books..." oninput="filterBooks()" />
+                    <input
+                        className={`${ClassBook.input} mb-2`}
+                        type="text" id="search" placeholder="Search books..."
+                        value={keySearch}
+                        onChange={(e) => {
+                            setKeySearch(e.target.value);
+                        }
+                        }
+                    />
                 </div>
                 <button
                     className={`${ClassBook.button}`}
@@ -172,7 +184,7 @@ const BookManage = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {listBook?.map((val, index) => {
+                    {listBookFilter?.map((val, index) => {
                         // console.log("val", listImage[val.image])
                         return (
                             <tr key={`book${index}`}>

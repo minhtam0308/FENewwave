@@ -1,0 +1,31 @@
+.bookCard {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s;
+}
+
+.bookCard:hover {
+    transform: translateY(-5px);
+}
+
+.ratingStars {
+    color: #ffc107;
+    cursor: pointer;
+}
+
+.btnCustom {
+    border-radius: 25px;
+    transition: all 0.3s;
+}
+
+.btnCustom:hover {
+    transform: scale(1.05);
+}
+
+.commentForm {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}

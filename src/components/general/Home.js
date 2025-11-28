@@ -3,18 +3,17 @@ import ClassHome from '../css/Home.module.scss';
 import '../css/generalCss.scss';
 import { useEffect, useState } from 'react';
 import { Button, Dropdown, Modal, Nav } from 'react-bootstrap';
+import axios from '../../config/axiosConfig.js';
 const Home = () => {
 
     const [user, setUser] = useState();
+    const [imageUser, setImageUser] = useState();
     const navigator = useNavigate();
     const [showModalLogOut, setShowModalLogOut] = useState(false);
 
     const handleCloseModalLogout = () => setShowModalLogOut(false);
     const handleShowModalLogout = () => setShowModalLogOut(true);
     const handleSignOut = () => {
-
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
         setUser(null);
         window.location.href = "http://localhost:3000/";
@@ -22,18 +21,29 @@ const Home = () => {
         handleCloseModalLogout();
     }
     useEffect(() => {
-        if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
-            setUser(JSON.parse(localStorage.getItem("user")));
+        const getImageUser = async () => {
+            if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
+                let userTemp = JSON.parse(localStorage.getItem("user"));
+                setUser(userTemp);
+                const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
+                setImageUser(URL.createObjectURL(imageUserData));
+            }
         }
+        getImageUser();
     }, [localStorage])
 
 
     return (<div className={`${ClassHome.body}`}>
 
-        <div className={`position-fixed top-0 end-0 p-4 ${ClassHome.zIndex10}`} >
-            <button id="themeToggle" className={`btn btn-light ${ClassHome.btnBeautiful} shadow-lg`}>
-                {user?.name}
-            </button>
+        <div
+            className={`position-absolute top-0 end-1 p-4 ${ClassHome.zIndex10}`}
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+                navigator('/profile-user', { state: { user, imageUser } });
+            }}
+        >
+            <img src={imageUser} alt="User Image"
+                class={`rounded-circle mb-4 ${ClassHome.userImage}`} style={{ "width": "90px", "height": "90px" }} />
         </div>
 
         <header className={`${ClassHome.heroBg} d-flex align-items-center justify-content-center text-center`}>

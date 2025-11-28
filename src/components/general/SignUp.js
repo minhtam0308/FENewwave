@@ -19,9 +19,8 @@ const SignUp = () => {
                 /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             );
     };
-    const validateZPassword = (email) => {
-        return String(email)
-            .toLowerCase()
+    const validateZPassword = (pass) => {
+        return String(pass)
             .match(
                 /^((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W]).{6,20})$/
             );
@@ -42,7 +41,8 @@ const SignUp = () => {
             return;
         }
 
-        if (!validateZPassword(email)) {
+        if (!validateZPassword(pass)) {
+            // console.log(pass)
             toast.warning('password must containt 1 digit, 1 lowercase, 1 uppercase, 1 special character and at least 8 characters and and maximum of 20');
             return;
         }
@@ -52,8 +52,14 @@ const SignUp = () => {
                 password: pass,
                 name: name
             });
-            toast.success(api);
-            navigator('/login');
+            if (api?.ec === 0) {
+                toast.success(api);
+                navigator('/login');
+            } else {
+                toast.error(api?.em);
+                return;
+            }
+
         } catch (err) {
             console.log(err);
             toast.error(err);

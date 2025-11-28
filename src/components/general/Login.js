@@ -4,6 +4,7 @@ import classLogin from '../css/Login.module.scss';
 import axios from '../../config/axiosConfig.js'
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { getToken, setToekn } from '../../context/contextToken.js';
 
 const Login = () => {
     const navigator = useNavigate();
@@ -39,9 +40,9 @@ const Login = () => {
             });
             if (token?.ec === 0) {
                 setLoading(false);
-                // localStorage.setItem("accessToken", token.accessToken);
-                // localStorage.setItem("refreshToken", token.refreshToken);
-                // localStorage.setItem("user", JSON.stringify(token.user));
+                setToekn(token.em);
+                console.log("token", getToken());
+                localStorage.setItem("user", JSON.stringify(token.user));
                 navigator('/');
                 return;
 
@@ -58,7 +59,6 @@ const Login = () => {
         }
 
     }
-    console.log(process.env.BASE_URL);
     return (
         <div className={`${classLogin.body}`}>
 
