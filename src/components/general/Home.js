@@ -4,9 +4,11 @@ import '../css/generalCss.scss';
 import { useEffect, useState } from 'react';
 import { Button, Dropdown, Modal, Nav } from 'react-bootstrap';
 import axios from '../../config/axiosConfig.js';
+import { toast } from 'react-toastify';
+import { useUserContext } from '../../context/UserContext.js';
 const Home = () => {
-
-    const [user, setUser] = useState();
+    const { userContext, setUserContext, setImageContext } = useUserContext();
+    const [user, setUser] = useState(localStorage.getItem('user') ? localStorage.getItem('user') : null);
     const [imageUser, setImageUser] = useState();
     const navigator = useNavigate();
     const [showModalLogOut, setShowModalLogOut] = useState(false);
@@ -14,19 +16,34 @@ const Home = () => {
     const handleCloseModalLogout = () => setShowModalLogOut(false);
     const handleShowModalLogout = () => setShowModalLogOut(true);
     const handleSignOut = () => {
-        localStorage.removeItem("user");
-        setUser(null);
-        window.location.href = "http://localhost:3000/";
+        const handleLogOut = async () => {
+            const resultLogut = await axios.get('/api/Auth/logout', {
+                withCredentials: true
+            });
+            if (resultLogut?.ec === 0) {
+                localStorage.removeItem("user");
+                setUser(null);
+                setUserContext(null);
+                window.location.href = "http://localhost:3000/";
 
-        handleCloseModalLogout();
+                handleCloseModalLogout();
+            } else {
+                toast.error('error from be');
+            }
+
+        }
+        handleLogOut();
+
     }
     useEffect(() => {
         const getImageUser = async () => {
             if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
                 let userTemp = JSON.parse(localStorage.getItem("user"));
                 setUser(userTemp);
+                setUserContext(userTemp);
                 const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
                 setImageUser(URL.createObjectURL(imageUserData));
+                setImageContext(URL.createObjectURL(imageUserData));
             }
         }
         getImageUser();

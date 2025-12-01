@@ -1,15 +1,21 @@
 
 
-import { useLocation } from 'react-router-dom';
+
+import { useUserContext } from '../../context/UserContext';
 import classView from '../css/ProfileUser.module.scss';
+import { useEffect, useState } from 'react';
+import ModalEditUser from './ModalUser/ModalEditUser';
 
 const ProfileUser = () => {
-    const { user, imageUser } = useLocation().state;
+
+    const { userContext, imageContext } = useUserContext();
+    const user = userContext;
+    const imageUser = imageContext;
+    const [showEditModal, setShowEditModal] = useState(false);
     return (
         <div class="container my-5">
             <div class="header mb-5 text-center">
                 <h1>Your Profile</h1>
-                <p>View your information clearly and easily</p>
             </div>
 
             <div class="row justify-content-center">
@@ -19,8 +25,6 @@ const ProfileUser = () => {
 
                             <img src={imageUser} alt="User Image"
                                 class={`rounded-circle mb-4 ${classView.userImage}`} style={{ "width": "150px", "height": "150px" }} />
-
-
                             <h5 class={`${classView.cardTitle} `} id="userName">{user?.name}</h5>
 
                             <div class={`${classView.infoItem}`}>
@@ -57,11 +61,20 @@ const ProfileUser = () => {
                                 </div>
                             </div>
 
-                            <button class={`btn btn-primary mt-4 ${classView.btnPrimary}`}>Edit Profile</button>
+                            <button class={`btn btn-primary mt-4 ${classView.btnPrimary}`}
+                                onClick={() => {
+                                    setShowEditModal(true);
+                                }}
+
+                            >Edit Profile</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <ModalEditUser
+                show={showEditModal}
+                setShow={setShowEditModal}
+            />
 
         </div>
     )

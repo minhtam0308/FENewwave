@@ -11,7 +11,6 @@ const HomeContent = () => {
     const listBookFilter = listBook.filter(b => b.title.toLowerCase().includes(keySearch.toLowerCase())
         || b.nameAuthor.toLowerCase().includes(keySearch.toLowerCase()));
     const [listImage, setListImage] = useState({});
-    const [listAuthor, setListAuthor] = useState();
     const [reload, setReload] = useState(false);
     // console.log(listBook, listImage, listAuthor);
     useEffect(() => {
@@ -58,6 +57,8 @@ const HomeContent = () => {
         getAllImage();
 
     }, [listBook])
+
+    console.log(listBook);
     return (<>
 
         <div className="container my-5 flex-grow-1">
@@ -84,44 +85,49 @@ const HomeContent = () => {
 
                 <div className="col-md-6 col-lg-4 d-flex w-100 justify-content-start flex-wrap gap-3" style={{ height: "fit-content" }}>
                     {listBookFilter?.map((val, index) => {
-                        return (<div
-                            className={`card ${ClassHome.bookCard} h-100 border-0 bg-white bg-opacity-90 col-3`}
-                            style={{ minHeight: "300px", marginTop: "15px" }}
-                            key={`index${index}`}
+                        if (index < 6)
+                            return (<div
+                                className={`card ${ClassHome.bookCard} h-100 border-0 bg-white bg-opacity-90 col-3`}
+                                style={{ minHeight: "300px", marginTop: "15px" }}
+                                key={`index${index}`}
 
-                        >
-                            <div className="position-relative">
-                                <img src={listImage[val.urlBook]}
-                                    className="card-img-top rounded-top-3" alt="Book Cover"
-                                    style={{ height: "90px" }}
-                                />
-                                <div className="position-absolute top-0 end-0 p-2">
-                                    <span className="badge bg-success rounded-pill"><i
-                                        className="bi bi-check-circle-fill me-1"></i>Available</span>
+                            >
+                                <div className="position-relative">
+                                    <img src={listImage[val.urlBook]}
+                                        className="card-img-top rounded-top-3" alt="Book Cover"
+                                        style={{ height: "90px" }}
+                                    />
+                                    {val.availableCopies !== 0 ?
+                                        <div className="position-absolute top-0 end-0 p-2">
+                                            <span className="badge bg-success rounded-pill">
+                                                <i className="bi bi-check-circle-fill me-1"></i>Available</span>
+                                        </div>
+                                        :
+                                        <div className="position-absolute top-0 end-0 p-2">
+                                            <span className="badge bg-danger rounded-pill">
+                                                <i className="bi bi-x-circle-fill me-1"></i>Unavailable</span>
+                                        </div>
+                                    }
                                 </div>
-                            </div>
-                            <div className="card-body d-flex flex-column text-center">
-                                <h5 className="card-title fw-bold text-dark">{val.title}</h5>
-                                <p className="card-text text-muted">{val.nameAuthor}</p>
-                                <div className="mt-auto">
-                                    <button className={`btn btn-outline-info ${ClassHome.btnBeautiful} w-100 mb-2`} data-bs-toggle="modal"
-                                        data-bs-target="#detailsModal"
-                                        onClick={() => {
-                                            navigator('/view-detailbook', {
-                                                state: {
-                                                    book: val,
-                                                    image: listImage[val.urlBook]
-                                                }
-                                            })
-                                        }}
-                                    ><i
-                                        className="bi bi-info-circle-fill me-2"></i>View Details</button>
-                                    <button className={`btn btn-success ${ClassHome.btnBeautiful} w-100`}
-                                        onclick="borrowBook('The Great Gatsby')"><i className="bi bi-cart-plus-fill me-2"></i>Borrow
-                                        Now</button>
+                                <div className="card-body d-flex flex-column text-center">
+                                    <h5 className="card-title fw-bold text-dark">{val.title}</h5>
+                                    <p className="card-text text-muted">{val.nameAuthor}</p>
+                                    <div className="mt-auto">
+                                        <button className={`btn btn-outline-info ${ClassHome.btnBeautiful} w-100 mb-2`} data-bs-toggle="modal"
+                                            data-bs-target="#detailsModal"
+                                            onClick={() => {
+                                                navigator('/view-detailbook');
+                                                localStorage.setItem("Book", JSON.stringify(val));
+                                                localStorage.setItem("Image", JSON.stringify(listImage[val.urlBook]));
+                                            }}
+                                        ><i
+                                            className="bi bi-info-circle-fill me-2"></i>View Details</button>
+                                        <button className={`btn btn-success ${ClassHome.btnBeautiful} w-100`}
+                                            onclick="borrowBook('The Great Gatsby')"><i className="bi bi-cart-plus-fill me-2"></i>Borrow
+                                            Now</button>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>)
+                            </div>)
 
                     })}
 

@@ -1,12 +1,14 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import ClassView from '../css/ViewDetail.module.scss';
+import { useState } from 'react';
 
 
 const ViewDetailBook = (props) => {
 
-    const { book, image } = useLocation().state;
+    const [book, setBook] = useState(localStorage.getItem("Book") ? JSON.parse(localStorage.getItem("Book")) : {});
+    const [image, setImage] = useState(localStorage.getItem("Image"));
     const navigator = useNavigate();
-    // console.log(book, image);
+    console.log(image)
     return (
         <div className="container my-5">
             <div onClick={() => {
@@ -18,11 +20,11 @@ const ViewDetailBook = (props) => {
                         <div className="row">
 
                             <div className="col-md-4 text-center">
-                                <img src={image} className="img-fluid rounded shadow-lg mb-3" style={{ height: "100%" }} alt="Book Cover" />
+                                <img src={`${image.replaceAll('"', '')}`} className="img-fluid rounded shadow-lg mb-3" style={{ height: "100%" }} alt="Book Cover" />
                             </div>
 
                             <div className="col-md-8">
-                                <h1 className="display-4 fw-bold text-primary mb-2"><i className="bi bi-book"></i>{book.title}</h1>
+                                <h1 className="display-4 fw-bold text-primary mb-2"><i className="bi bi-book"></i> {book.title}</h1>
                                 <p className="text-muted fs-4 mb-3">by {book.nameAuthor}</p>
                                 <div className="mb-3">
                                     <span className="badge bg-info me-2"><i className="bi bi-tag"></i> Fiction</span>
