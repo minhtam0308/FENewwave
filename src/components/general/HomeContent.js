@@ -58,7 +58,7 @@ const HomeContent = () => {
 
     }, [listBook])
 
-    console.log(listBook);
+    // console.log(listBook);
     return (<>
 
         <div className="container my-5 flex-grow-1">
@@ -83,7 +83,7 @@ const HomeContent = () => {
 
             <div id="results" className={`row g-4 ${ClassHome.fadeIn}`}>
 
-                <div className="col-md-6 col-lg-4 d-flex w-100 justify-content-start flex-wrap gap-3" style={{ height: "fit-content" }}>
+                <div className="col-md-6 col-lg-4 d-flex w-100 justify-content-between flex-wrap gap-3" style={{ height: "fit-content" }}>
                     {listBookFilter?.map((val, index) => {
                         if (index < 6)
                             return (<div

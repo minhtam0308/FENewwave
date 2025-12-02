@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ClassView from '../css/ViewDetail.module.scss';
 import { useState } from 'react';
 

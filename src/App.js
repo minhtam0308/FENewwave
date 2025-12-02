@@ -14,6 +14,7 @@ import ViewDetailBook from './components/user/ViewDetailBook.js';
 import ProfileUser from './components/user/ProfileUser.js';
 import { useUserContext } from './context/UserContext.js';
 import { useEffect } from 'react';
+import Library from './components/user/Library.js';
 
 function App() {
   let isFresh = true;
@@ -68,6 +69,7 @@ function App() {
           <Route path={'/manage-books'} element={<BookManage />} />
           <Route path={'/view-detailbook'} element={<ViewDetailBook />} />
           <Route path={'/profile-user'} element={<ProfileUser />} />
+          <Route path={'/library'} element={<Library />} />
           <Route index element={<HomeContent />} />
 
         </Route>

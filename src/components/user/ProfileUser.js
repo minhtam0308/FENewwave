@@ -41,7 +41,17 @@ const ProfileUser = () => {
                             </div>
                             <div class={`${classView.infoItem}`}>
                                 <i class="bi bi-person-circle"></i>
-                                <p id={`${classView.userBio}`}><strong>Bio:</strong> A passionate developer who loves coding and coffee.
+                                <p id={`${classView.userBio}`}><strong>Department:</strong> {user?.khoa ? user.khoa : "???"}
+                                </p>
+                            </div>
+                            <div class={`${classView.infoItem}`}>
+                                <i class="bi bi-person-circle"></i>
+                                <p id={`${classView.userBio}`}><strong>Class:</strong> {user?.lop ? user.lop : "???"}
+                                </p>
+                            </div>
+                            <div class={`${classView.infoItem}`}>
+                                <i class="bi bi-person-circle"></i>
+                                <p id={`${classView.userBio}`}><strong>Phone number:</strong> {user?.sdt ? user.sdt : "???"}
                                 </p>
                             </div>
 

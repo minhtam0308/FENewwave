@@ -56,7 +56,12 @@ const Home = () => {
             className={`position-absolute top-0 end-1 p-4 ${ClassHome.zIndex10}`}
             style={{ cursor: "pointer" }}
             onClick={() => {
-                navigator('/profile-user', { state: { user, imageUser } });
+                if (localStorage.getItem('user')) {
+
+                    navigator('/profile-user', { state: { user, imageUser } });
+                } else {
+                    toast.warn("You need to login before")
+                }
             }}
         >
             <img src={imageUser} alt="User Image"
@@ -79,8 +84,9 @@ const Home = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto">
-                        <li className="nav-item"><a className="nav-link" href="#"><i className="bi bi-book-half me-1"></i>
-                            Library</a></li>
+                        <li className="nav-item">
+                            <Link to={'/library'} className="nav-link" href="#"><i className="bi bi-book-half me-1"></i>
+                                Library</Link></li>
                         <li className="nav-item"><a className="nav-link" href="#"><i
                             className="bi bi-cart-plus-fill me-1"></i>Borrow Books</a></li>
                         {user?.role === "admin" && (
