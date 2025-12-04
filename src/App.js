@@ -15,6 +15,7 @@ import ProfileUser from './components/user/ProfileUser.js';
 import { useUserContext } from './context/UserContext.js';
 import { useEffect } from 'react';
 import Library from './components/user/Library.js';
+import BorrowCart from './components/user/BorrowCart.js';
 
 function App() {
   let isFresh = true;
@@ -70,6 +71,7 @@ function App() {
           <Route path={'/view-detailbook'} element={<ViewDetailBook />} />
           <Route path={'/profile-user'} element={<ProfileUser />} />
           <Route path={'/library'} element={<Library />} />
+          <Route path={'/borrowCart'} element={<BorrowCart />} />
           <Route index element={<HomeContent />} />
 
         </Route>

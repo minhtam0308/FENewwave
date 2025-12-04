@@ -3,6 +3,7 @@ import axios from '../../config/axiosConfig.js';
 import { useEffect, useRef, useState } from 'react';
 import classLybrary from '../css/Library.module.scss'
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Library = () => {
     const [page, setPage] = useState(0);
@@ -13,6 +14,7 @@ const Library = () => {
     const [listAuthor, setListAuthor] = useState([]);
     const [bookFilter, setBookFillter] = useState();
     const loadRef = useRef();
+    const navigator = useNavigate();
 
     useEffect(() => {
         const getPaginateBook = async () => {
@@ -35,7 +37,7 @@ const Library = () => {
             getPaginateBook();
         }
     }, [page])
-
+    console.log(page);
     useEffect(() => {
         const getImage = async (idImage) => {
             try {
@@ -113,7 +115,7 @@ const Library = () => {
             }
         }));
     }
-    console.log(bookFilter);
+    // console.log(bookFilter);
     return (<>
         <div className=" my-5 mx-5" style={{ width: "93vw" }}>
             <div className="row">
@@ -158,7 +160,13 @@ const Library = () => {
                                             <p className="card-text">By {val.nameAuthor}</p>
                                             <p className="card-text">{val.description}</p>
                                             <div className='text-center'>
-                                                <button className={`btn btn-outline-info w-100 mb-2`} data-bs-toggle="modal">
+                                                <button className={`btn btn-outline-info w-100 mb-2`} data-bs-toggle="modal"
+                                                    onClick={() => {
+                                                        navigator('/view-detailbook');
+                                                        localStorage.setItem("Book", JSON.stringify(val));
+                                                        localStorage.setItem("Image", JSON.stringify(listImage[val.urlBook]));
+                                                    }}
+                                                >
                                                     <i className="bi bi-info-circle-fill me-2"></i>View Details
                                                 </button>
                                             </div>

@@ -71,7 +71,6 @@ const Home = () => {
         <header className={`${ClassHome.heroBg} d-flex align-items-center justify-content-center text-center`}>
             <div className={`${ClassHome.heroText}`}>
                 <h1 className="display-4 fw-bold mb-3"><i className="bi bi-book-half me-3"></i> Library</h1>
-                <p className="lead">Discover and borrow your next favorite book effortlessly.</p>
             </div>
         </header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 shadow-lg sticky-top">
@@ -87,8 +86,9 @@ const Home = () => {
                         <li className="nav-item">
                             <Link to={'/library'} className="nav-link" href="#"><i className="bi bi-book-half me-1"></i>
                                 Library</Link></li>
-                        <li className="nav-item"><a className="nav-link" href="#"><i
-                            className="bi bi-cart-plus-fill me-1"></i>Borrow Books</a></li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to={'/borrowCart'}>
+                                <i className="bi bi-cart-plus-fill me-1"></i>Borrow Books</Link></li>
                         {user?.role === "admin" && (
                             <Nav.Item>
                                 <Dropdown as={Nav.Item}>
