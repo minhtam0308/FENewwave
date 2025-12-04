@@ -150,33 +150,33 @@ const ModalEditUser = (props) => {
                     <div className="mb-3">
                         <label for="editLocation" className="form-label">Department</label>
                         <input
-                            name="khoa"
+                            name="department"
                             type="text"
                             className="form-control"
                             id="editLocation"
-                            value={user?.khoa}
+                            value={user?.department}
                             onChange={handleChange}
                         />
                     </div>
                     <div className="mb-3">
                         <label for="editLocation" className="form-label">Class</label>
                         <input
-                            name="lop"
+                            name="class"
                             type="text"
                             className="form-control"
                             id="editLocation"
-                            value={user?.lop}
+                            value={user?.class}
                             onChange={handleChange}
                         />
                     </div>
                     <div className="mb-3">
                         <label for="editLocation" className="form-label">Phone number</label>
                         <input
-                            name="sdt"
+                            name="phoneNumber"
                             type="text"
                             className="form-control"
                             id="editLocation"
-                            value={user?.sdt}
+                            value={user?.phoneNumber}
                             onChange={handleChange}
                         />
                     </div>

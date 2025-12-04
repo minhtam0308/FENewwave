@@ -41,17 +41,17 @@ const ProfileUser = () => {
                             </div>
                             <div class={`${classView.infoItem}`}>
                                 <i class="bi bi-person-circle"></i>
-                                <p id={`${classView.userBio}`}><strong>Department:</strong> {user?.khoa ? user.khoa : "???"}
+                                <p id={`${classView.userBio}`}><strong>Department:</strong> {user?.department ? user.department : "???"}
                                 </p>
                             </div>
                             <div class={`${classView.infoItem}`}>
                                 <i class="bi bi-person-circle"></i>
-                                <p id={`${classView.userBio}`}><strong>Class:</strong> {user?.lop ? user.lop : "???"}
+                                <p id={`${classView.userBio}`}><strong>Class:</strong> {user?.class ? user.class : "???"}
                                 </p>
                             </div>
                             <div class={`${classView.infoItem}`}>
                                 <i class="bi bi-person-circle"></i>
-                                <p id={`${classView.userBio}`}><strong>Phone number:</strong> {user?.sdt ? user.sdt : "???"}
+                                <p id={`${classView.userBio}`}><strong>Phone number:</strong> {user?.phoneNumber ? user.phoneNumber : "???"}
                                 </p>
                             </div>
 
