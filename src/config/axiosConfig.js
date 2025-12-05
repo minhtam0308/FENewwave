@@ -31,7 +31,7 @@ instance.interceptors.response.use(function (response) {
     const againAPI = await handleRefreshToken(error);
     return againAPI;
   }
-  return Promise.resolve({ ec: 1, em: error?.code, status: error?.response?.status });
+  return Promise.resolve({ ec: 1, em: error.response.data?.em ?? error?.code, status: error?.response?.status });
 });
 
 const handleRefreshToken = async (error) => {
