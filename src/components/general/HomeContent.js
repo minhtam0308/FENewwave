@@ -8,7 +8,7 @@ const HomeContent = () => {
     const navigator = useNavigate();
     const [listBook, setListBook] = useState([]);
     const [keySearch, setKeySearch] = useState('');
-    const listBookFilter = listBook.filter(b => b.title.toLowerCase().includes(keySearch.toLowerCase())
+    const listBookFilter = listBook ?? listBook.filter(b => b.title.toLowerCase().includes(keySearch.toLowerCase())
         || b.nameAuthor.toLowerCase().includes(keySearch.toLowerCase()));
     const [listImage, setListImage] = useState({});
     const [reload, setReload] = useState(false);
@@ -19,7 +19,7 @@ const HomeContent = () => {
                 const allBook = await axios.get(`/api/Book/getAllBook`);
                 // console.log("allbook", allBook);
                 if (allBook?.ec === 0) {
-                    setListBook(allBook?.em);
+                    setListBook(allBook?.em ?? []);
                     return;
                 }
                 setListBook([]);

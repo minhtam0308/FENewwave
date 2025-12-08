@@ -41,9 +41,13 @@ const Home = () => {
                 let userTemp = JSON.parse(localStorage.getItem("user"));
                 setUser(userTemp);
                 setUserContext(userTemp);
-                const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
-                setImageUser(URL.createObjectURL(imageUserData));
-                setImageContext(URL.createObjectURL(imageUserData));
+                if (userTemp.urlUserImage) {
+                    const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
+                    setImageUser(URL.createObjectURL(imageUserData));
+                    setImageContext(URL.createObjectURL(imageUserData));
+                }
+
+
             }
         }
         getImageUser();
