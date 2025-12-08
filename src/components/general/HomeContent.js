@@ -3,6 +3,7 @@ import ClassHome from '../css/Home.module.scss';
 import axios from '../../config/axiosConfig.js';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import ModalConfirmAddCart from '../user/ModalUser/ModalConfirmAddCart.js';
 
 const HomeContent = () => {
     const navigator = useNavigate();
@@ -12,6 +13,11 @@ const HomeContent = () => {
         || b.nameAuthor.toLowerCase().includes(keySearch.toLowerCase()));
     const [listImage, setListImage] = useState({});
     const [reload, setReload] = useState(false);
+
+    const [showModalAddCart, setShowModalAddCart] = useState(false);
+    const [addCartInfor, setAddCartInfor] = useState({});
+    const imageAddCartInfor = addCartInfor.urlBook ? listImage[addCartInfor.urlBook] : null;
+
     // console.log(listBook, listImage, listAuthor);
     useEffect(() => {
         const getAllBook = async () => {
@@ -123,7 +129,12 @@ const HomeContent = () => {
                                         ><i
                                             className="bi bi-info-circle-fill me-2"></i>View Details</button>
                                         <button className={`btn btn-success ${ClassHome.btnBeautiful} w-100`}
-                                            onclick="borrowBook('The Great Gatsby')"><i className="bi bi-cart-plus-fill me-2"></i>Borrow
+                                            onClick={() => {
+                                                setShowModalAddCart(true);
+                                                setAddCartInfor(val);
+                                            }}
+
+                                        ><i className="bi bi-cart-plus-fill me-2"></i>Borrow
                                             Now</button>
                                     </div>
                                 </div>
@@ -137,7 +148,12 @@ const HomeContent = () => {
             </div>
 
         </div>
-
+        <ModalConfirmAddCart
+            show={showModalAddCart}
+            setShow={setShowModalAddCart}
+            productInfor={addCartInfor}
+            image={imageAddCartInfor}
+        />
 
 
     </>)
