@@ -6,6 +6,7 @@ import { Button, Dropdown, Modal, Nav } from 'react-bootstrap';
 import axios from '../../config/axiosConfig.js';
 import { toast } from 'react-toastify';
 import { useUserContext } from '../../context/UserContext.js';
+
 const Home = () => {
     const { userContext, setUserContext, setImageContext } = useUserContext();
     const [user, setUser] = useState(localStorage.getItem('user') ? localStorage.getItem('user') : null);
@@ -25,7 +26,6 @@ const Home = () => {
                 setUser(null);
                 setUserContext(null);
                 window.location.href = "http://localhost:3000/";
-
                 handleCloseModalLogout();
             } else {
                 toast.error('error from be');
@@ -41,12 +41,13 @@ const Home = () => {
                 let userTemp = JSON.parse(localStorage.getItem("user"));
                 setUser(userTemp);
                 setUserContext(userTemp);
-                if (userTemp.urlUserImage) {
-                    const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
+                const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
+                if (imageUserData?.ec !== 1) {
+                    // console.log(imageUserData);
                     setImageUser(URL.createObjectURL(imageUserData));
                     setImageContext(URL.createObjectURL(imageUserData));
-                }
 
+                }
 
             }
         }
@@ -159,6 +160,7 @@ const Home = () => {
                 </Button>
             </Modal.Footer>
         </Modal>
+
     </div >)
 }
 export default Home;

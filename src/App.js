@@ -32,7 +32,8 @@ function App() {
           setToekn(resfreshToken.em);
           localStorage.setItem("user", JSON.stringify(resfreshToken.user));
           setUserContext(resfreshToken.user);
-
+        } else {
+          isFresh = false;
         }
       }, 540000);
     } catch (e) {
