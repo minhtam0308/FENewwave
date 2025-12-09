@@ -21,9 +21,9 @@ const ModalConfirmBorrowBook = ({ show, setShow }) => {
                 <Modal.Title>Confirm Borrow Books</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <div class="card-body">
+                <div className="card-body">
                     <h5>Your Cart:</h5>
-                    <table class="table table-striped">
+                    <table className="table table-striped">
                         <thead>
                             <tr>
                                 <th scope="col">Image</th>
@@ -36,7 +36,7 @@ const ModalConfirmBorrowBook = ({ show, setShow }) => {
                             <tr>
                                 <td>
                                     <div>
-                                        <img src="blob:http://localhost:3000/0d7c9165-9464-4be0-98f2-3e756460cd33" alt="The Great Gatsby" class="img-fluid"
+                                        <img alt="The Great Gatsby" className="img-fluid"
                                             style={{
                                                 height: "50px",
                                                 maxWidth: "50px",
@@ -50,13 +50,13 @@ const ModalConfirmBorrowBook = ({ show, setShow }) => {
                                 <td>1</td>
                             </tr>
                             <tr>
-                                <td><img src="blob:http://localhost:3000/cdcf6eb9-5ee5-497e-92ef-288f17e1c01f" alt="The Great Gatsby" class="img-fluid" style={{ maxWidth: "50px" }} /></td>
+                                <td><img alt="The Great Gatsby" className="img-fluid" style={{ maxWidth: "50px" }} /></td>
                                 <td>The Great Gatsby</td>
 
                                 <td>1</td>
                             </tr>
                             <tr>
-                                <td><img src="blob:http://localhost:3000/cdcf6eb9-5ee5-497e-92ef-288f17e1c01f" alt="The Great Gatsby" class="img-fluid" style={{ maxWidth: "50px" }} /></td>
+                                <td><img alt="The Great Gatsby" className="img-fluid" style={{ maxWidth: "50px" }} /></td>
                                 <td>The Great Gatsby</td>
                                 <td>F. Scott Fitzgerald</td>
                                 <td>1</td>
@@ -65,13 +65,13 @@ const ModalConfirmBorrowBook = ({ show, setShow }) => {
                         </tbody>
                     </table>
                     <hr />
-                    <div class="mb-3">
-                        <label for="borrowDate" class="form-label">Borrow Date</label>
-                        <input type="date" class="form-control" id="borrowDate" value="2023-10-01" />
+                    <div className="mb-3">
+                        <label for="borrowDate" className="form-label">Borrow Date</label>
+                        <input type="date" className="form-control" id="borrowDate" value="2023-10-01" />
                     </div>
-                    <div class="mb-3">
-                        <label for="returnDate" class="form-label">number of borrowing days</label>
-                        <input type="number" class="form-control" id="returnDate" />
+                    <div className="mb-3">
+                        <label for="returnDate" className="form-label">number of borrowing days</label>
+                        <input type="number" className="form-control" id="returnDate" />
                     </div>
                 </div>
             </Modal.Body>

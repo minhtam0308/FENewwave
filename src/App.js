@@ -43,23 +43,23 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    const reload = async () => {
-      let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
-        {
-          withCredentials: true
-        }
-      );
-      if (resfreshToken?.ec === 0) {
-        setToekn(resfreshToken.em);
-        setUserContext(resfreshToken.user);
-        localStorage.setItem("user", JSON.stringify(resfreshToken.user));
-      }
-    }
-    reload();
-  }, [])
+  // useEffect(() => {
+  //   const reload = async () => {
+  //     let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
+  //       {
+  //         withCredentials: true
+  //       }
+  //     );
+  //     if (resfreshToken?.ec === 0) {
+  //       setToekn(resfreshToken.em);
+  //       setUserContext(resfreshToken.user);
+  //       localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+  //     }
+  //   }
+  //   reload();
+  // }, [])
 
-
+  // console.log("appp");
   return (
 
     <BrowserRouter>
