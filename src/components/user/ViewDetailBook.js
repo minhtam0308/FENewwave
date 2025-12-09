@@ -13,7 +13,7 @@ const ViewDetailBook = (props) => {
         <div className="container my-5">
             <div onClick={() => {
                 navigator(-1);
-            }} class="btn btn-light back-btn btn-custom shadow"><i class="bi bi-arrow-left"></i> Back</div>
+            }} className="btn btn-light back-btn btn-custom shadow"><i className="bi bi-arrow-left"></i> Back</div>
             <div className="row justify-content-center">
                 <div className="col-lg-10">
                     <div className={`${ClassView.bookCard} p-4`}>
@@ -57,7 +57,7 @@ const ViewDetailBook = (props) => {
                     <div className="card shadow-sm mb-3">
                         <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
-                                <img src="https://via.placeholder.com/50x50?text=JD" className="rounded-circle me-3" alt="User Avatar" />
+                                <img className="rounded-circle me-3" alt="User Avatar" />
                                 <div>
                                     <h5 className="card-title mb-0">John Doe</h5>
                                     <small className="text-muted">October 15, 2023</small>
@@ -70,7 +70,7 @@ const ViewDetailBook = (props) => {
                     <div className="card shadow-sm mb-3">
                         <div className="card-body">
                             <div className="d-flex align-items-center mb-2">
-                                <img src="https://via.placeholder.com/50x50?text=JS" className="rounded-circle me-3" alt="User Avatar" />
+                                <img className="rounded-circle me-3" alt="User Avatar" />
                                 <div>
                                     <h5 className="card-title mb-0">Jane Smith</h5>
                                     <small className="text-muted">September 22, 2023</small>

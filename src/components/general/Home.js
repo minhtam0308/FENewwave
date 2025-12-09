@@ -70,7 +70,7 @@ const Home = () => {
             }}
         >
             <img src={imageUser} alt="User Image"
-                class={`rounded-circle mb-4 ${ClassHome.userImage}`} style={{ "width": "90px", "height": "90px" }} />
+                className={`rounded-circle mb-4 ${ClassHome.userImage}`} style={{ "width": "90px", "height": "90px" }} />
         </div>
 
         <header className={`${ClassHome.heroBg} d-flex align-items-center justify-content-center text-center`}>

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import classLybrary from '../css/Library.module.scss'
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import ModalConfirmAddCart from './ModalUser/ModalConfirmAddCart.js';
 
 const Library = () => {
     const [page, setPage] = useState(0);
@@ -13,6 +14,11 @@ const Library = () => {
     const [listImage, setListImage] = useState([]);
     const [listAuthor, setListAuthor] = useState([]);
     const [bookFilter, setBookFillter] = useState();
+
+    const [showModalAddToCart, setShowModalAddToCart] = useState(false);
+    const [productInfor, setProductInfor] = useState({});
+    const imageAddCartInfor = productInfor.urlBook ? listImage[productInfor.urlBook] : "";
+
     const loadRef = useRef();
     const navigator = useNavigate();
 
@@ -171,8 +177,10 @@ const Library = () => {
                                                 </button>
                                             </div>
                                             <button className={`btn btn-success w-100`}
-                                                onclick="borrowBook('The Great Gatsby')"><i className="bi bi-cart-plus-fill me-2"></i>Borrow
-                                                Now</button>
+                                                onClick={() => {
+                                                    setShowModalAddToCart(true);
+                                                    setProductInfor(val);
+                                                }}><i className="bi bi-cart-plus-fill me-2"></i>Borrow Now</button>
                                         </div>
                                     </div>
 
@@ -184,7 +192,7 @@ const Library = () => {
                                 return (
                                     <div className={`col-md-6 col-lg-4 mb-4 ${classLybrary.bookCard} ${classLybrary.show}`} data-author="F. Scott Fitzgerald" key={`index${index}`}>
                                         <div className="card">
-                                            <img src={listImage[val.urlBook]} className={`card-img-top ${classLybrary.bookImage}`} alt="Book 1" />
+                                            {val.urlBook && <img src={listImage[val.urlBook]} className={`card-img-top ${classLybrary.bookImage}`} alt="Book 1" />}
                                             <div className={`card-body ${classLybrary.cardBody}`}>
                                                 <h5 className="card-title">{val.title}</h5>
                                                 <p className="card-text">By {val.nameAuthor}</p>
@@ -195,8 +203,11 @@ const Library = () => {
                                                     </button>
                                                 </div>
                                                 <button className={`btn btn-success w-100`}
-                                                    onclick="borrowBook('The Great Gatsby')"><i className="bi bi-cart-plus-fill me-2"></i>Borrow
-                                                    Now</button>
+                                                    onClick={() => {
+                                                        setShowModalAddToCart(true);
+                                                        setProductInfor(val);
+                                                    }}><i className="bi bi-cart-plus-fill me-2">
+                                                    </i>Borrow Now</button>
                                             </div>
                                         </div>
 
@@ -211,6 +222,12 @@ const Library = () => {
                 </div>
             </div>
         </div >
+        <ModalConfirmAddCart
+            show={showModalAddToCart}
+            setShow={setShowModalAddToCart}
+            productInfor={productInfor}
+            image={imageAddCartInfor}
+        />
     </>)
 }
 export default Library;

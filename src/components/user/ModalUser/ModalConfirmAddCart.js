@@ -11,13 +11,24 @@ const ModalConfirmAddCart = ({ show, setShow, productInfor, image }) => {
     const handleClose = () => {
         setShow(false);
     }
-    console.log(productInfor);
-    const handleAddToCart = () => {
+    // console.log(productInfor);
+    const handleAddToCart = async () => {
         if (quantity < 1 || quantity > productInfor.availableCopies) {
             toast.warning("Out of available copies");
             return;
         }
         //idBook, quantity
+        const resAddToCart = await axios.post('/api/Cart/addBookToCart', {
+            idBook: productInfor.id,
+            quantity: quantity
+        })
+        if (resAddToCart?.ec === 0) {
+            toast.success(resAddToCart.em);
+        } else {
+            toast.error(resAddToCart?.em);
+        }
+        console.log(resAddToCart);
+        handleClose();
     }
     return (<>
         <Modal
