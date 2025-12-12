@@ -13,55 +13,65 @@ const ProfileUser = () => {
     const imageUser = imageContext;
     const [showEditModal, setShowEditModal] = useState(false);
     return (
-        <div class="container my-5">
-            <div class="header mb-5 text-center">
+        <div className="container my-5">
+            <div className="header mb-5 text-center">
                 <h1>Your Profile</h1>
             </div>
 
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class={`${classView.card} card`}>
-                        <div class="card-body text-center">
+            <div className="row justify-content-center">
+                <div className="col-md-8">
+                    <div className={`${classView.card} card`}>
+                        <div className="card-body text-center">
 
                             <img src={imageUser} alt="User Image"
-                                class={`rounded-circle mb-4 ${classView.userImage}`} style={{ "width": "150px", "height": "150px" }} />
-                            <h5 class={`${classView.cardTitle} `} id="userName">{user?.name}</h5>
+                                className={`rounded-circle mb-4 ${classView.userImage}`} style={{ "width": "150px", "height": "150px" }} />
+                            <h5 className={`${classView.cardTitle} `} id="userName">{user?.name}</h5>
 
-                            <div class={`${classView.infoItem}`}>
-                                <i class="bi bi-envelope-fill"></i>
+                            <div className={`${classView.infoItem}`}>
+                                <i className="bi bi-envelope-fill"></i>
                                 <p id={`${classView.userEmail}`}><strong>Email:</strong>{user?.email}</p>
                             </div>
-                            <div class={`${classView.infoItem}`}>
-                                <i class="bi bi-calendar-event-fill"></i>
+                            <div className={`${classView.infoItem}`}>
+                                <i className="bi bi-calendar-event-fill"></i>
                                 <p id={`${classView.userAge}`}><strong>Age:</strong> {user?.age ? user.age : "???"}</p>
                             </div>
-                            <div class={`${classView.infoItem}`}>
-                                <i class="bi bi-geo-alt-fill"></i>
+                            <div className={`${classView.infoItem}`}>
+                                <i className="bi bi-geo-alt-fill"></i>
                                 <p id="userLocation"><strong>Location:</strong> {user?.location ? user.location : "???"}</p>
                             </div>
-                            <div class={`${classView.infoItem}`}>
-                                <i class="bi bi-person-circle"></i>
-                                <p id={`${classView.userBio}`}><strong>Bio:</strong> A passionate developer who loves coding and coffee.
+                            <div className={`${classView.infoItem}`}>
+                                <i className="bi bi-person-circle"></i>
+                                <p id={`${classView.userBio}`}><strong>Department:</strong> {user?.department ? user.department : "???"}
+                                </p>
+                            </div>
+                            <div className={`${classView.infoItem}`}>
+                                <i className="bi bi-person-circle"></i>
+                                <p id={`${classView.userBio}`}><strong>Class:</strong> {user?.class ? user.class : "???"}
+                                </p>
+                            </div>
+                            <div className={`${classView.infoItem}`}>
+                                <i className="bi bi-person-circle"></i>
+                                <p id={`${classView.userBio}`}><strong>Phone number:</strong> {user?.phoneNumber ? user.phoneNumber : "???"}
                                 </p>
                             </div>
 
 
-                            <div class={`${classView.stats}`}>
-                                <div class={`${classView.statItem}`}>
-                                    <div class={`${classView.statNumber}`} id="followers">???</div>
+                            <div className={`${classView.stats}`}>
+                                <div className={`${classView.statItem}`}>
+                                    <div className={`${classView.statNumber}`} id="followers">???</div>
                                     <small>Followers</small>
                                 </div>
-                                <div class={`${classView.statItem}`}>
-                                    <div class={`${classView.statNumber}`} id="posts">???</div>
+                                <div className={`${classView.statItem}`}>
+                                    <div className={`${classView.statNumber}`} id="posts">???</div>
                                     <small>Posts</small>
                                 </div>
-                                <div class={`${classView.statItem}`}>
-                                    <div class={`${classView.statNumber}`} id="likes">???</div>
+                                <div className={`${classView.statItem}`}>
+                                    <div className={`${classView.statNumber}`} id="likes">???</div>
                                     <small>Likes</small>
                                 </div>
                             </div>
 
-                            <button class={`btn btn-primary mt-4 ${classView.btnPrimary}`}
+                            <button className={`btn btn-primary mt-4 ${classView.btnPrimary}`}
                                 onClick={() => {
                                     setShowEditModal(true);
                                 }}

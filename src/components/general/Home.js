@@ -6,6 +6,7 @@ import { Button, Dropdown, Modal, Nav } from 'react-bootstrap';
 import axios from '../../config/axiosConfig.js';
 import { toast } from 'react-toastify';
 import { useUserContext } from '../../context/UserContext.js';
+
 const Home = () => {
     const { userContext, setUserContext, setImageContext } = useUserContext();
     const [user, setUser] = useState(localStorage.getItem('user') ? localStorage.getItem('user') : null);
@@ -25,7 +26,6 @@ const Home = () => {
                 setUser(null);
                 setUserContext(null);
                 window.location.href = "http://localhost:3000/";
-
                 handleCloseModalLogout();
             } else {
                 toast.error('error from be');
@@ -42,8 +42,13 @@ const Home = () => {
                 setUser(userTemp);
                 setUserContext(userTemp);
                 const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
-                setImageUser(URL.createObjectURL(imageUserData));
-                setImageContext(URL.createObjectURL(imageUserData));
+                if (imageUserData?.ec !== 1) {
+                    // console.log(imageUserData);
+                    setImageUser(URL.createObjectURL(imageUserData));
+                    setImageContext(URL.createObjectURL(imageUserData));
+
+                }
+
             }
         }
         getImageUser();
@@ -56,17 +61,21 @@ const Home = () => {
             className={`position-absolute top-0 end-1 p-4 ${ClassHome.zIndex10}`}
             style={{ cursor: "pointer" }}
             onClick={() => {
-                navigator('/profile-user', { state: { user, imageUser } });
+                if (localStorage.getItem('user')) {
+
+                    navigator('/profile-user', { state: { user, imageUser } });
+                } else {
+                    toast.warn("You need to login before")
+                }
             }}
         >
             <img src={imageUser} alt="User Image"
-                class={`rounded-circle mb-4 ${ClassHome.userImage}`} style={{ "width": "90px", "height": "90px" }} />
+                className={`rounded-circle mb-4 ${ClassHome.userImage}`} style={{ "width": "90px", "height": "90px" }} />
         </div>
 
         <header className={`${ClassHome.heroBg} d-flex align-items-center justify-content-center text-center`}>
             <div className={`${ClassHome.heroText}`}>
                 <h1 className="display-4 fw-bold mb-3"><i className="bi bi-book-half me-3"></i> Library</h1>
-                <p className="lead">Discover and borrow your next favorite book effortlessly.</p>
             </div>
         </header>
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark bg-opacity-75 shadow-lg sticky-top">
@@ -79,10 +88,12 @@ const Home = () => {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav me-auto">
-                        <li className="nav-item"><a className="nav-link" href="#"><i className="bi bi-book-half me-1"></i>
-                            Library</a></li>
-                        <li className="nav-item"><a className="nav-link" href="#"><i
-                            className="bi bi-cart-plus-fill me-1"></i>Borrow Books</a></li>
+                        <li className="nav-item">
+                            <Link to={'/library'} className="nav-link" href="#"><i className="bi bi-book-half me-1"></i>
+                                Library</Link></li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to={'/borrowCart'}>
+                                <i className="bi bi-cart-plus-fill me-1"></i>Borrow Books</Link></li>
                         {user?.role === "admin" && (
                             <Nav.Item>
                                 <Dropdown as={Nav.Item}>
@@ -149,6 +160,7 @@ const Home = () => {
                 </Button>
             </Modal.Footer>
         </Modal>
+
     </div >)
 }
 export default Home;

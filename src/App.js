@@ -14,6 +14,8 @@ import ViewDetailBook from './components/user/ViewDetailBook.js';
 import ProfileUser from './components/user/ProfileUser.js';
 import { useUserContext } from './context/UserContext.js';
 import { useEffect } from 'react';
+import Library from './components/user/Library.js';
+import BorrowCart from './components/user/BorrowCart.js';
 
 function App() {
   let isFresh = true;
@@ -30,7 +32,8 @@ function App() {
           setToekn(resfreshToken.em);
           localStorage.setItem("user", JSON.stringify(resfreshToken.user));
           setUserContext(resfreshToken.user);
-
+        } else {
+          isFresh = false;
         }
       }, 540000);
     } catch (e) {
@@ -40,23 +43,23 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    const reload = async () => {
-      let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
-        {
-          withCredentials: true
-        }
-      );
-      if (resfreshToken?.ec === 0) {
-        setToekn(resfreshToken.em);
-        setUserContext(resfreshToken.user);
-        localStorage.setItem("user", JSON.stringify(resfreshToken.user));
-      }
-    }
-    reload();
-  }, [])
+  // useEffect(() => {
+  //   const reload = async () => {
+  //     let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
+  //       {
+  //         withCredentials: true
+  //       }
+  //     );
+  //     if (resfreshToken?.ec === 0) {
+  //       setToekn(resfreshToken.em);
+  //       setUserContext(resfreshToken.user);
+  //       localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+  //     }
+  //   }
+  //   reload();
+  // }, [])
 
-
+  // console.log("appp");
   return (
 
     <BrowserRouter>
@@ -68,6 +71,8 @@ function App() {
           <Route path={'/manage-books'} element={<BookManage />} />
           <Route path={'/view-detailbook'} element={<ViewDetailBook />} />
           <Route path={'/profile-user'} element={<ProfileUser />} />
+          <Route path={'/library'} element={<Library />} />
+          <Route path={'/borrowCart'} element={<BorrowCart />} />
           <Route index element={<HomeContent />} />
 
         </Route>

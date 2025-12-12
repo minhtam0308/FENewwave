@@ -31,7 +31,7 @@ instance.interceptors.response.use(function (response) {
     const againAPI = await handleRefreshToken(error);
     return againAPI;
   }
-  return Promise.resolve({ ec: 1, em: error?.code, status: error?.response?.status });
+  return Promise.resolve({ ec: 1, em: error.response?.data?.em || error?.message, status: error?.response?.status });
 });
 
 const handleRefreshToken = async (error) => {
@@ -57,7 +57,7 @@ const handleRefreshToken = async (error) => {
       }
       //send request before
       try {
-        console.log("test", error);
+        // console.log("test", error);
         let response;
         if (error.config.method !== 'get' && error.config.method !== 'delete') {
           const contentType = error.config.headers['Content-Type'];
@@ -106,5 +106,6 @@ const handleRefreshToken = async (error) => {
   }
 
 }
+
 
 export default instance;

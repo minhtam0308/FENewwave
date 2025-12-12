@@ -147,6 +147,39 @@ const ModalEditUser = (props) => {
                             onChange={handleChange}
                         />
                     </div>
+                    <div className="mb-3">
+                        <label for="editLocation" className="form-label">Department</label>
+                        <input
+                            name="department"
+                            type="text"
+                            className="form-control"
+                            id="editLocation"
+                            value={user?.department}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label for="editLocation" className="form-label">Class</label>
+                        <input
+                            name="class"
+                            type="text"
+                            className="form-control"
+                            id="editLocation"
+                            value={user?.class}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label for="editLocation" className="form-label">Phone number</label>
+                        <input
+                            name="phoneNumber"
+                            type="text"
+                            className="form-control"
+                            id="editLocation"
+                            value={user?.phoneNumber}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
             </Modal.Body>
             <Modal.Footer>
