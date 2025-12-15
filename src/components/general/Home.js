@@ -21,7 +21,7 @@ const Home = () => {
             const resultLogut = await axios.get('/api/Auth/logout', {
                 withCredentials: true
             });
-            if (resultLogut?.ec === 0) {
+            if (resultLogut?.errorCode === 0) {
                 localStorage.removeItem("user");
                 setUser(null);
                 setUserContext(null);

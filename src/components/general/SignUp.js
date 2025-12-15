@@ -52,11 +52,11 @@ const SignUp = () => {
                 password: pass,
                 name: name
             });
-            if (api?.ec === 0) {
-                toast.success(api);
+            if (api?.errorCode === 0) {
+                toast.success(api.errorMessage);
                 navigator('/login');
             } else {
-                toast.error(api?.em);
+                toast.error(api?.errorMessage);
                 return;
             }
 

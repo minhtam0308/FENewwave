@@ -7,13 +7,15 @@ import { useNavigate } from 'react-router-dom';
 import ModalConfirmAddCart from './ModalUser/ModalConfirmAddCart.js';
 
 const Library = () => {
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(6);
-    const [continueGetPage, setContinueGetPage] = useState(true);
+    // const [continueGetPage, setContinueGetPage] = useState(true);
+    const [totalPage, setTotalPage] = useState(0);
     const [listBook, setListBook] = useState([]);
     const [listImage, setListImage] = useState([]);
     const [listAuthor, setListAuthor] = useState([]);
     const [bookFilter, setBookFillter] = useState();
+    const [numberPages, setNumberPage] = useState(0);
 
     const [showModalAddToCart, setShowModalAddToCart] = useState(false);
     const [productInfor, setProductInfor] = useState({});
@@ -24,34 +26,29 @@ const Library = () => {
 
     useEffect(() => {
         const getPaginateBook = async () => {
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve();
-                }, 250);
-            })
+            // await new Promise((resolve) => {
+            //     setTimeout(() => {
+            //         resolve();
+            //     }, 250);
+            // })
             const resultPage = await axios.get(`/api/Book/getPagedBook?PageSize=${pageSize}&PageNumber=${page}`);
-            if (resultPage?.ec === 0) {
-                if (resultPage.em.totalPages === page) {
-                    setContinueGetPage(false);
-                }
-                setListBook(pre => ([...pre, ...resultPage.em.items]));
-            } else {
-                setContinueGetPage(false);
+            if (resultPage?.errorCode === 0) {
+                setTotalPage(resultPage.data.totalPages)
+                // setListBook(pre => ([...pre, ...resultPage.data.items]));
+                setListBook(resultPage.data.items);
             }
         }
-        if (continueGetPage && page > 0) {
-            getPaginateBook();
-        }
+        getPaginateBook();
     }, [page])
     console.log(page);
     useEffect(() => {
         const getImage = async (idImage) => {
             try {
-                await new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve();
-                    }, 250);
-                })
+                // await new Promise((resolve) => {
+                //     setTimeout(() => {
+                //         resolve();
+                //     }, 250);
+                // })
                 const resultImage = await axios.get(`/api/Image/getImage?idImage=${idImage}`, { responseType: "blob" });
                 // console.log(resultImage);
                 if (listImage[idImage]) {
@@ -75,29 +72,29 @@ const Library = () => {
 
     }, [listBook])
 
-    useEffect(() => {
-        if (!continueGetPage)
-            return;
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                setPage(prev => prev + 1);
-            }
-        });
-        const loader = loadRef.current;
-        if (loader) observer.observe(loader);
-        return () => {
-            if (loader) observer.unobserve(loader);
-        };
-    }, []);
+    // useEffect(() => {
+    //     if (!continueGetPage)
+    //         return;
+    //     const observer = new IntersectionObserver((entries) => {
+    //         if (entries[0].isIntersecting) {
+    //             setPage(prev => prev + 1);
+    //         }
+    //     });
+    //     const loader = loadRef.current;
+    //     if (loader) observer.observe(loader);
+    //     return () => {
+    //         if (loader) observer.unobserve(loader);
+    //     };
+    // }, []);
 
     useEffect(() => {
         const getAllAuthor = async () => {
             try {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
-                if (allAuthor?.ec === 0) {
+                if (allAuthor?.errorCode === 0) {
 
                     // console.log(allAuthor?.em);
-                    setListAuthor(allAuthor?.em);
+                    setListAuthor(allAuthor?.data);
                     return;
                 }
                 toast.error(allAuthor?.em);
@@ -113,6 +110,7 @@ const Library = () => {
         console.log(key)
         if (key === 'all') {
             setBookFillter();
+            setNumberPage(totalPage);
             return;
         }
         setBookFillter(listBook.filter((val) => {
@@ -120,6 +118,11 @@ const Library = () => {
                 return val;
             }
         }));
+        if (setBookFillter && setBookFillter.length) {
+            setNumberPage(setBookFillter.length / 6 + 1);
+        } else {
+            setNumberPage(0);
+        }
     }
     // console.log(bookFilter);
     return (<>
@@ -216,7 +219,45 @@ const Library = () => {
                             })
                         }
 
-                        {continueGetPage && <div ref={loadRef} className={classLybrary.spinner}></div>}
+                        {/* {continueGetPage && <div ref={loadRef} className={classLybrary.spinner}></div>} */}
+                        <nav aria-label="Page navigation">
+                            <ul className="pagination justify-content-center">
+                                <li className={`page-item ${page === 1 ? "disable" : ""}`}>
+                                    <button
+                                        className="page-link"
+                                        tabindex="-1" aria-disabled="true"
+                                        onClick={() => {
+                                            if (page > 1) {
+                                                setPage(pre => pre - 1);
+                                            }
+                                        }}
+                                    >Pre</button>
+                                </li>
+                                {[...Array(numberPages)].map((val, index) => {
+                                    return (
+                                        <li
+                                            className={`page-item ${index + 1 === page ? "active" : ""}`}
+                                            onClick={() => {
+                                                setPage(index + 1);
+                                            }}
+                                        ><button className="page-link"
+                                        >{index + 1}</button></li>
+                                    )
+                                })}
+
+
+                                <li className={`page-item ${page === 1 ? "disable" : ""}`}>
+                                    <button
+                                        className="page-link"
+                                        onClick={() => {
+                                            if (page < totalPage) {
+                                                setPage(pre => pre + 1);
+                                            }
+                                        }}
+                                    >Next</button>
+                                </li>
+                            </ul>
+                        </nav>
 
                     </div>
                 </div>
