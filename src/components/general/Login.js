@@ -38,16 +38,16 @@ const Login = () => {
             }, {
                 withCredentials: true
             });
-            if (token?.ec === 0) {
+            if (token?.errorCode === 0) {
                 setLoading(false);
-                setToekn(token.em);
+                setToekn(token.data.accessToken);
                 console.log("token", getToken());
-                localStorage.setItem("user", JSON.stringify(token.user));
+                localStorage.setItem("user", JSON.stringify(token.data.user));
                 navigator('/');
                 return;
 
             }
-            toast.error(token?.em);
+            toast.error(token?.errorMessage);
             setLoading(false);
             return;
             // console.log(token);

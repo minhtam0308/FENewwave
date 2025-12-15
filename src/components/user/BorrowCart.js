@@ -3,6 +3,7 @@ import classBorrowCart from '../css/BorrowCart.module.scss'
 import ModalConfirmBorrowBook from './ModalUser/ModalConfirmBorrowBook';
 import axios from '../../config/axiosConfig.js';
 import { toast } from 'react-toastify';
+import ModalConfirmDelPro from './ModalUser/ModalConfirmDelPro.js';
 const BorrowCart = () => {
     const [showModalConfirmBorrow, setShowModalConfirmBorrow] = useState(false);
 
@@ -10,14 +11,21 @@ const BorrowCart = () => {
     const [listImage, setListImage] = useState({});
 
     const [listBook, setListBook] = useState([]);
+    const [idCart, setIdCart] = useState("");
+
+    const [showModalDelBook, setShowModalDelBook] = useState(false);
+    const [delValue, setDelvalue] = useState({});
+    const imageDel = delValue.urlBook ? listImage[delValue.urlBook] : "";
+
 
     useEffect(() => {
         const getAllBook = async () => {
             try {
                 const allBook = await axios.get(`/api/Cart/getAllCart`);
                 // console.log("allbook", allBook);
-                if (allBook?.ec === 0) {
-                    setListBook(allBook?.em.listBook);
+                if (allBook?.errorCode === 0) {
+                    setListBook(allBook?.data.listBook);
+                    setIdCart(allBook?.data.idCart);
                     return;
                 }
                 setListBook([]);
@@ -77,7 +85,14 @@ const BorrowCart = () => {
                                             <p className="card-text mb-1"><i className="bi bi-person me-2"></i><strong>Author:</strong> {val.nameAuthor}</p>
                                             <p className="card-text mb-1"><i className="bi bi-person me-2"></i><strong>Quantity:</strong> {val.quantity}</p>
                                         </div>
-                                        <button className={`btn ${classBorrowCart.btnDangerModern} btn-sm`}><i className="bi bi-x-circle"></i> Remove</button>
+                                        <button
+                                            className={`btn ${classBorrowCart.btnDangerModern} btn-sm`}
+                                            onClick={() => {
+                                                setDelvalue(val);
+                                                setShowModalDelBook(true);
+                                            }}
+                                        >
+                                            <i className="bi bi-x-circle"></i> Remove</button>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +123,19 @@ const BorrowCart = () => {
             <ModalConfirmBorrowBook
                 show={showModalConfirmBorrow}
                 setShow={setShowModalConfirmBorrow}
+
             />
+            <ModalConfirmDelPro
+                show={showModalDelBook}
+                setShow={setShowModalDelBook}
+                delValue={delValue}
+                reload={reload}
+                setReload={setReload}
+                imageDel={imageDel}
+                idCart={idCart}
+            />
+
+
         </>
     )
 }

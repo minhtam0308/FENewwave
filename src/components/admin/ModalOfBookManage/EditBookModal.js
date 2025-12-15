@@ -52,11 +52,11 @@ const EditBookModal = (props) => {
                     }
                 });
 
-                if (resultCreateImage?.ec !== 0) {
-                    toast.error(resultCreateImage?.em);
+                if (resultCreateImage?.errorCode !== 0) {
+                    toast.error(resultCreateImage?.errorMessage);
                     return;
                 }
-                urlBook = resultCreateImage.em;
+                urlBook = resultCreateImage.data;
             } else {
                 let form = new FormData();
                 form.append("file", image);
@@ -67,21 +67,21 @@ const EditBookModal = (props) => {
                     }
                 });
 
-                if (resultCreateImage?.ec !== 0) {
-                    toast.error(resultCreateImage?.em);
+                if (resultCreateImage?.errorCode !== 0) {
+                    toast.error(resultCreateImage?.errorMessage);
                     return;
                 }
             }
         }
         //put edit book
         const resultPutbook = await axios.put(`/api/Book/putBook`, { ...data, urlBook: urlBook });
-        if (resultPutbook?.ec === 0) {
-            toast.success(resultPutbook?.em);
+        if (resultPutbook?.errorCode === 0) {
+            toast.success(resultPutbook?.errorMessage);
             handleClose();
             setReload(!reload);
             setLoading(false);
         } else {
-            toast.error(resultPutbook?.em);
+            toast.error(resultPutbook?.errorMessage);
             return;
         }
     }

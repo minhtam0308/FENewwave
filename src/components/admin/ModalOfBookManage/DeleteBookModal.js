@@ -15,22 +15,24 @@ const DeleteBookModal = (props) => {
         //delete Image
         if (delValue.urlBook) {
             const resultDelImage = await axios.delete(`/api/Image/deleteImage?idImage=${delValue.urlBook}`);
-            if (resultDelImage?.ec !== 0) {
-                toast.error(resultDelImage?.em);
+            if (resultDelImage?.errorCode !== 0) {
+                toast.error(resultDelImage?.errorMessage);
+                setLoading(false);
                 return;
             }
 
         }
 
         const resultDelBook = await axios.delete(`/api/Book/delBook?idBook=${delValue.id}`);
-        if (resultDelBook?.ec === 0) {
-            toast.success(resultDelBook?.em);
+        if (resultDelBook?.errorCode === 0) {
+            toast.success(resultDelBook?.errorMessage);
             handleClose();
+
             setLoading(false);
             setReload(!reload);
             return;
         } else {
-            toast.error(resultDelBook?.em);
+            toast.error(resultDelBook?.errorMessage);
         }
         setLoading(false);
 

@@ -28,10 +28,10 @@ function App() {
             withCredentials: true
           }
         );
-        if (resfreshToken?.ec === 0) {
+        if (resfreshToken?.errorCode === 0) {
           setToekn(resfreshToken.em);
-          localStorage.setItem("user", JSON.stringify(resfreshToken.user));
-          setUserContext(resfreshToken.user);
+          localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
+          setUserContext(resfreshToken.data.user);
         } else {
           isFresh = false;
         }
@@ -43,23 +43,23 @@ function App() {
     }
   }
 
-  // useEffect(() => {
-  //   const reload = async () => {
-  //     let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
-  //       {
-  //         withCredentials: true
-  //       }
-  //     );
-  //     if (resfreshToken?.ec === 0) {
-  //       setToekn(resfreshToken.em);
-  //       setUserContext(resfreshToken.user);
-  //       localStorage.setItem("user", JSON.stringify(resfreshToken.user));
-  //     }
-  //   }
-  //   reload();
-  // }, [])
+  useEffect(() => {
+    const reload = async () => {
+      let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
+        {
+          withCredentials: true
+        }
+      );
+      if (resfreshToken?.errorCode === 0) {
+        setToekn(resfreshToken.data.accessToken);
+        setUserContext(resfreshToken.data.user);
+        localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
+      }
+    }
+    reload();
+  }, [])
 
-  // console.log("appp");
+  console.log("appp");
   return (
 
     <BrowserRouter>

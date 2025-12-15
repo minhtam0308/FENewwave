@@ -4,7 +4,7 @@ import { getToken, setToekn } from "../context/contextToken";
 
 
 const instance = axios.create({
-  baseURL: 'https://localhost:7118'
+  baseURL: 'https://localhost:7139'
 });
 
 // Alter defaults after instance has been created
@@ -45,15 +45,15 @@ const handleRefreshToken = async (error) => {
           withCredentials: true
         });
       //if infor is incorrect
-      if (resfreshToken?.ec === 2) {
+      if (resfreshToken?.errorCode === 2) {
         localStorage.removeItem("user");
         return {
-          ec: 2,
-          em: "You need to log in again"
+          errorCode: 2,
+          errorMessage: "You need to log in again"
         }
       } else {
-        setToekn(resfreshToken.em);
-        localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+        setToekn(resfreshToken.data.accessToken);
+        localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
       }
       //send request before
       try {
@@ -89,8 +89,8 @@ const handleRefreshToken = async (error) => {
         console.error('Lỗi:', error); // Xử lý lỗi nếu có
         isFresh = false;
         return {
-          ec: 2,
-          em: "You data error inner"
+          errorCode: 2,
+          errorMessage: "You data error inner"
         }
       }
     } catch (e) {

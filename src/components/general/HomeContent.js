@@ -24,8 +24,8 @@ const HomeContent = () => {
             try {
                 const allBook = await axios.get(`/api/Book/getAllBook`);
                 // console.log("allbook", allBook);
-                if (allBook?.ec === 0) {
-                    setListBook(allBook?.em ?? []);
+                if (allBook?.errorCode === 0) {
+                    setListBook(allBook?.data);
                     return;
                 }
                 setListBook([]);
@@ -43,10 +43,13 @@ const HomeContent = () => {
             try {
                 const resultImage = await axios.get(`/api/Image/getImage?idImage=${idImage}`, { responseType: "blob" });
                 // console.log(resultImage);
-                if (listImage[idImage]) {
-                    URL.revokeObjectURL(listImage[idImage]);
+                if (resultImage) {
+                    if (listImage[idImage]) {
+                        URL.revokeObjectURL(listImage[idImage]);
+                    }
+                    setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
                 }
-                setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+
 
 
             } catch (e) {
