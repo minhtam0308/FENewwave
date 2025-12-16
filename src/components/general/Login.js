@@ -41,7 +41,7 @@ const Login = () => {
             if (token?.errorCode === 0) {
                 setLoading(false);
                 setToekn(token.data.accessToken);
-                console.log("token", getToken());
+                // console.log("token", getToken());
                 localStorage.setItem("user", JSON.stringify(token.data.user));
                 navigator('/');
                 return;
@@ -49,8 +49,8 @@ const Login = () => {
             }
             toast.error(token?.errorMessage);
             setLoading(false);
-            return;
             // console.log(token);
+            return;
         } catch (error) {
             console.log(error);
             toast.error(error?.data);
