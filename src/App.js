@@ -14,6 +14,8 @@ import ViewDetailBook from './components/user/ViewDetailBook.js';
 import ProfileUser from './components/user/ProfileUser.js';
 import { useUserContext } from './context/UserContext.js';
 import { useEffect } from 'react';
+import Library from './components/user/Library.js';
+import BorrowCart from './components/user/BorrowCart.js';
 
 function App() {
   let isFresh = true;
@@ -26,11 +28,12 @@ function App() {
             withCredentials: true
           }
         );
-        if (resfreshToken?.ec === 0) {
+        if (resfreshToken?.errorCode === 0) {
           setToekn(resfreshToken.em);
-          localStorage.setItem("user", JSON.stringify(resfreshToken.user));
-          setUserContext(resfreshToken.user);
-
+          localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
+          setUserContext(resfreshToken.data.user);
+        } else {
+          isFresh = false;
         }
       }, 540000);
     } catch (e) {
@@ -47,16 +50,16 @@ function App() {
           withCredentials: true
         }
       );
-      if (resfreshToken?.ec === 0) {
-        setToekn(resfreshToken.em);
-        setUserContext(resfreshToken.user);
-        localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+      if (resfreshToken?.errorCode === 0) {
+        setToekn(resfreshToken.data.accessToken);
+        setUserContext(resfreshToken.data.user);
+        localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
       }
     }
     reload();
   }, [])
 
-
+  console.log("appp");
   return (
 
     <BrowserRouter>
@@ -68,6 +71,8 @@ function App() {
           <Route path={'/manage-books'} element={<BookManage />} />
           <Route path={'/view-detailbook'} element={<ViewDetailBook />} />
           <Route path={'/profile-user'} element={<ProfileUser />} />
+          <Route path={'/library'} element={<Library />} />
+          <Route path={'/borrowCart'} element={<BorrowCart />} />
           <Route index element={<HomeContent />} />
 
         </Route>

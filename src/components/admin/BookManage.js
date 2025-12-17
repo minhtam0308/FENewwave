@@ -50,8 +50,8 @@ const BookManage = () => {
             try {
                 const allBook = await axios.get(`/api/Book/getAllBook`);
                 // console.log("allbook", allBook);
-                if (allBook?.ec === 0) {
-                    setListBook(allBook?.em);
+                if (allBook?.errorCode === 0) {
+                    setListBook(allBook?.data);
                     return;
                 }
                 setListBook([]);
@@ -65,12 +65,12 @@ const BookManage = () => {
             try {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
                 // console.log("auythor", allAuthor);
-                if (allAuthor?.ec === 0) {
-                    setListAuthor(allAuthor?.em);
-                    setAuthor(allAuthor.em[0]?.id);
+                if (allAuthor?.errorCode === 0) {
+                    setListAuthor(allAuthor?.data);
+                    setAuthor(allAuthor.data[0]?.id);
                     return;
                 }
-                toast.error(allAuthor?.em);
+                toast.error(allAuthor?.errorMessage);
                 setListAuthor([]);
 
             } catch (e) {
@@ -86,10 +86,16 @@ const BookManage = () => {
             try {
                 const resultImage = await axios.get(`/api/Image/getImage?idImage=${idImage}`, { responseType: "blob" });
                 // console.log(resultImage);
+
                 if (listImage[idImage]) {
                     URL.revokeObjectURL(listImage[idImage]);
                 }
-                setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+                try {
+                    setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+
+                } catch (e) {
+                    console.log(e);
+                }
 
 
             } catch (e) {
@@ -123,11 +129,11 @@ const BookManage = () => {
                     "Content-Type": "multipart/form-data",
                 }
             });
-            if (resultCreateImage?.ec !== 0) {
-                toast.error(resultCreateImage?.em);
+            if (resultCreateImage?.errorCode !== 0) {
+                toast.error(resultCreateImage?.errorMessage);
                 return;
             } else {
-                UrlBook = resultCreateImage.em
+                UrlBook = resultCreateImage.data
             }
         }
 
@@ -139,12 +145,12 @@ const BookManage = () => {
             urlBook: UrlBook
         }
         const resultCreateImage = await axios.post(`/api/Book/postCreateBook`, bookinfor);
-        if (resultCreateImage?.ec === 0) {
-            toast.success(resultCreateImage?.em);
+        if (resultCreateImage?.errorCode === 0) {
+            toast.success(resultCreateImage?.errorMessage);
             handleCloseModalCreateBook();
             setReload(!reload);
         } else {
-            toast.error(resultCreateImage?.em);
+            toast.error(resultCreateImage?.errorMessage);
             return;
         }
     }

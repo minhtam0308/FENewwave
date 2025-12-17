@@ -31,7 +31,7 @@ instance.interceptors.response.use(function (response) {
     const againAPI = await handleRefreshToken(error);
     return againAPI;
   }
-  return Promise.resolve({ ec: 1, em: error?.code, status: error?.response?.status });
+  return Promise.resolve(error?.response?.data);
 });
 
 const handleRefreshToken = async (error) => {
@@ -45,19 +45,19 @@ const handleRefreshToken = async (error) => {
           withCredentials: true
         });
       //if infor is incorrect
-      if (resfreshToken?.ec === 2) {
+      if (resfreshToken?.errorCode === 2) {
         localStorage.removeItem("user");
         return {
-          ec: 2,
-          em: "You need to log in again"
+          errorCode: 2,
+          errorMessage: "You need to log in again"
         }
       } else {
-        setToekn(resfreshToken.em);
-        localStorage.setItem("user", JSON.stringify(resfreshToken.user));
+        setToekn(resfreshToken.data.accessToken);
+        localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
       }
       //send request before
       try {
-        console.log("test", error);
+        // console.log("test", error);
         let response;
         if (error.config.method !== 'get' && error.config.method !== 'delete') {
           const contentType = error.config.headers['Content-Type'];
@@ -69,6 +69,7 @@ const handleRefreshToken = async (error) => {
             requestData = JSON.parse(error.config.data);
           }
           //send request
+
           response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
             requestData,
             {
@@ -77,7 +78,7 @@ const handleRefreshToken = async (error) => {
           );
 
         } else {
-          response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
+          response = await instance[error.config.method](error.config.url,
             {
               // headers: { ...error.config.headers, Authorization: `Bearer ${getToken()}` },
               params: error.config.params
@@ -89,8 +90,8 @@ const handleRefreshToken = async (error) => {
         console.error('Lỗi:', error); // Xử lý lỗi nếu có
         isFresh = false;
         return {
-          ec: 2,
-          em: "You data error inner"
+          errorCode: 2,
+          errorMessage: "You data error inner"
         }
       }
     } catch (e) {
@@ -106,5 +107,6 @@ const handleRefreshToken = async (error) => {
   }
 
 }
+
 
 export default instance;

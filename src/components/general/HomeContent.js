@@ -3,23 +3,29 @@ import ClassHome from '../css/Home.module.scss';
 import axios from '../../config/axiosConfig.js';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import ModalConfirmAddCart from '../user/ModalUser/ModalConfirmAddCart.js';
 
 const HomeContent = () => {
     const navigator = useNavigate();
     const [listBook, setListBook] = useState([]);
     const [keySearch, setKeySearch] = useState('');
-    const listBookFilter = listBook.filter(b => b.title.toLowerCase().includes(keySearch.toLowerCase())
+    const listBookFilter = listBook ?? listBook.filter(b => b.title.toLowerCase().includes(keySearch.toLowerCase())
         || b.nameAuthor.toLowerCase().includes(keySearch.toLowerCase()));
     const [listImage, setListImage] = useState({});
     const [reload, setReload] = useState(false);
+
+    const [showModalAddCart, setShowModalAddCart] = useState(false);
+    const [addCartInfor, setAddCartInfor] = useState({});
+    const imageAddCartInfor = addCartInfor.urlBook ? listImage[addCartInfor.urlBook] : null;
+
     // console.log(listBook, listImage, listAuthor);
     useEffect(() => {
         const getAllBook = async () => {
             try {
                 const allBook = await axios.get(`/api/Book/getAllBook`);
                 // console.log("allbook", allBook);
-                if (allBook?.ec === 0) {
-                    setListBook(allBook?.em);
+                if (allBook?.errorCode === 0) {
+                    setListBook(allBook?.data);
                     return;
                 }
                 setListBook([]);
@@ -37,10 +43,18 @@ const HomeContent = () => {
             try {
                 const resultImage = await axios.get(`/api/Image/getImage?idImage=${idImage}`, { responseType: "blob" });
                 // console.log(resultImage);
-                if (listImage[idImage]) {
-                    URL.revokeObjectURL(listImage[idImage]);
+                if (resultImage) {
+                    if (listImage[idImage]) {
+                        URL.revokeObjectURL(listImage[idImage]);
+                    }
+                    try {
+
+                        setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }
-                setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+
 
 
             } catch (e) {
@@ -58,7 +72,7 @@ const HomeContent = () => {
 
     }, [listBook])
 
-    console.log(listBook);
+    // console.log(listBook);
     return (<>
 
         <div className="container my-5 flex-grow-1">
@@ -83,7 +97,7 @@ const HomeContent = () => {
 
             <div id="results" className={`row g-4 ${ClassHome.fadeIn}`}>
 
-                <div className="col-md-6 col-lg-4 d-flex w-100 justify-content-start flex-wrap gap-3" style={{ height: "fit-content" }}>
+                <div className="col-md-6 col-lg-4 d-flex w-100 justify-content-between flex-wrap gap-3" style={{ height: "fit-content" }}>
                     {listBookFilter?.map((val, index) => {
                         if (index < 6)
                             return (<div
@@ -123,7 +137,12 @@ const HomeContent = () => {
                                         ><i
                                             className="bi bi-info-circle-fill me-2"></i>View Details</button>
                                         <button className={`btn btn-success ${ClassHome.btnBeautiful} w-100`}
-                                            onclick="borrowBook('The Great Gatsby')"><i className="bi bi-cart-plus-fill me-2"></i>Borrow
+                                            onClick={() => {
+                                                setShowModalAddCart(true);
+                                                setAddCartInfor(val);
+                                            }}
+
+                                        ><i className="bi bi-cart-plus-fill me-2"></i>Borrow
                                             Now</button>
                                     </div>
                                 </div>
@@ -137,7 +156,12 @@ const HomeContent = () => {
             </div>
 
         </div>
-
+        <ModalConfirmAddCart
+            show={showModalAddCart}
+            setShow={setShowModalAddCart}
+            productInfor={addCartInfor}
+            image={imageAddCartInfor}
+        />
 
 
     </>)

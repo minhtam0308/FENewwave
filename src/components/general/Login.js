@@ -38,19 +38,19 @@ const Login = () => {
             }, {
                 withCredentials: true
             });
-            if (token?.ec === 0) {
+            if (token?.errorCode === 0) {
                 setLoading(false);
-                setToekn(token.em);
-                console.log("token", getToken());
-                localStorage.setItem("user", JSON.stringify(token.user));
+                setToekn(token.data.accessToken);
+                // console.log("token", getToken());
+                localStorage.setItem("user", JSON.stringify(token.data.user));
                 navigator('/');
                 return;
 
             }
-            toast.error(token?.em);
+            toast.error(token?.errorMessage);
             setLoading(false);
-            return;
             // console.log(token);
+            return;
         } catch (error) {
             console.log(error);
             toast.error(error?.data);

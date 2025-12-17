@@ -31,6 +31,10 @@ const ModalEditUser = (props) => {
             toast.warning("Fill your name!");
             return;
         }
+        if (!user.age || user.age < 0) {
+            toast.warning("Your age is not valid!");
+            return;
+        }
         let resultCreateImage;
         if (fileImage) {
             if (user.urlUserImage !== '258d5e1a-ff57-4092-2a5d-08de2e43c05d') {
@@ -42,7 +46,7 @@ const ModalEditUser = (props) => {
                         "Content-Type": "multipart/form-data",
                     }
                 });
-                if (resultPutImage?.ec !== 0) {
+                if (resultPutImage?.errorCode !== 0) {
                     toast.error(resultPutImage?.em);
                     return;
                 }
@@ -55,8 +59,8 @@ const ModalEditUser = (props) => {
                     }
                 });
 
-                if (resultCreateImage?.ec !== 0) {
-                    toast.error(resultCreateImage?.em);
+                if (resultCreateImage?.errorCode !== 0) {
+                    toast.error(resultCreateImage?.errorMessage);
                     return;
                 }
             }
@@ -64,19 +68,19 @@ const ModalEditUser = (props) => {
 
         let resultChangeUser;
         if (resultCreateImage) {
-            resultChangeUser = await axios.put('/api/User/putChangeUser', { ...user, urlUserImage: resultCreateImage.em });
+            resultChangeUser = await axios.put('/api/User/putChangeUser', { ...user, urlUserImage: resultCreateImage.data });
 
         } else {
             resultChangeUser = await axios.put('/api/User/putChangeUser', user);
 
         }
-        if (resultChangeUser?.ec === 0) {
-            toast.success(resultChangeUser?.em);
+        if (resultChangeUser?.errorCode === 0) {
+            toast.success(resultChangeUser?.errorMessage);
             handleClose();
             window.location.reload();
             return;
         }
-        toast.error(resultChangeUser?.em);
+        toast.error(resultChangeUser?.errorMessage);
         return;
     }
 
@@ -144,6 +148,39 @@ const ModalEditUser = (props) => {
                             className="form-control"
                             id="editLocation"
                             value={user?.location}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label for="editLocation" className="form-label">Department</label>
+                        <input
+                            name="department"
+                            type="text"
+                            className="form-control"
+                            id="editLocation"
+                            value={user?.department}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label for="editLocation" className="form-label">Class</label>
+                        <input
+                            name="class"
+                            type="text"
+                            className="form-control"
+                            id="editLocation"
+                            value={user?.class}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label for="editLocation" className="form-label">Phone number</label>
+                        <input
+                            name="phoneNumber"
+                            type="text"
+                            className="form-control"
+                            id="editLocation"
+                            value={user?.phoneNumber}
                             onChange={handleChange}
                         />
                     </div>
