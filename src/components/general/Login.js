@@ -38,7 +38,7 @@ const Login = () => {
             }, {
                 withCredentials: true
             });
-            if (token?.errorCode === 0) {
+            if (token?.errorCode === 201) {
                 setLoading(false);
                 setToekn(token.data.accessToken);
                 // console.log("token", getToken());

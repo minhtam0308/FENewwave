@@ -45,10 +45,10 @@ const handleRefreshToken = async (error) => {
           withCredentials: true
         });
       //if infor is incorrect
-      if (resfreshToken?.errorCode === 2) {
+      if (resfreshToken?.errorCode === 400) {
         localStorage.removeItem("user");
         return {
-          errorCode: 2,
+          errorCode: 400,
           errorMessage: "You need to log in again"
         }
       } else {
@@ -70,7 +70,7 @@ const handleRefreshToken = async (error) => {
           }
           //send request
 
-          response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
+          response = await instance[error.config.method](error.config.url,
             requestData,
             {
               // headers: { ...error.config.headers, Authorization: `Bearer ${getToken()}` }
@@ -90,7 +90,7 @@ const handleRefreshToken = async (error) => {
         console.error('Lỗi:', error); // Xử lý lỗi nếu có
         isFresh = false;
         return {
-          errorCode: 2,
+          errorCode: 400,
           errorMessage: "You data error inner"
         }
       }

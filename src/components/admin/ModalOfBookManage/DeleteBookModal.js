@@ -15,7 +15,7 @@ const DeleteBookModal = (props) => {
         //delete Image
         if (delValue.urlBook) {
             const resultDelImage = await axios.delete(`/api/Image/deleteImage?idImage=${delValue.urlBook}`);
-            if (resultDelImage?.errorCode !== 0) {
+            if (resultDelImage?.errorCode !== 201) {
                 toast.error(resultDelImage?.errorMessage);
                 setLoading(false);
                 return;
@@ -24,7 +24,7 @@ const DeleteBookModal = (props) => {
         }
 
         const resultDelBook = await axios.delete(`/api/Book/delBook?idBook=${delValue.id}`);
-        if (resultDelBook?.errorCode === 0) {
+        if (resultDelBook?.errorCode === 201) {
             toast.success(resultDelBook?.errorMessage);
             handleClose();
 

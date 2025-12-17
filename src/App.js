@@ -28,7 +28,7 @@ function App() {
             withCredentials: true
           }
         );
-        if (resfreshToken?.errorCode === 0) {
+        if (resfreshToken?.errorCode === 201) {
           setToekn(resfreshToken.em);
           localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
           setUserContext(resfreshToken.data.user);
@@ -50,7 +50,7 @@ function App() {
           withCredentials: true
         }
       );
-      if (resfreshToken?.errorCode === 0) {
+      if (resfreshToken?.errorCode === 201) {
         setToekn(resfreshToken.data.accessToken);
         setUserContext(resfreshToken.data.user);
         localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));

@@ -52,7 +52,7 @@ const EditBookModal = (props) => {
                     }
                 });
 
-                if (resultCreateImage?.errorCode !== 0) {
+                if (resultCreateImage?.errorCode !== 201) {
                     toast.error(resultCreateImage?.errorMessage);
                     return;
                 }
@@ -67,7 +67,7 @@ const EditBookModal = (props) => {
                     }
                 });
 
-                if (resultCreateImage?.errorCode !== 0) {
+                if (resultCreateImage?.errorCode !== 201) {
                     toast.error(resultCreateImage?.errorMessage);
                     return;
                 }
@@ -75,7 +75,7 @@ const EditBookModal = (props) => {
         }
         //put edit book
         const resultPutbook = await axios.put(`/api/Book/putBook`, { ...data, urlBook: urlBook });
-        if (resultPutbook?.errorCode === 0) {
+        if (resultPutbook?.errorCode === 201) {
             toast.success(resultPutbook?.errorMessage);
             handleClose();
             setReload(!reload);

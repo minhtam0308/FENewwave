@@ -41,7 +41,7 @@ const AuthorManage = () => {
         const getAllAuthor = async () => {
             try {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
-                if (allAuthor?.errorCode === 0) {
+                if (allAuthor?.errorCode === 201) {
 
                     // console.log(allAuthor?.em);
                     setListAuthor(allAuthor?.data);
@@ -58,7 +58,7 @@ const AuthorManage = () => {
 
     const handleAddNewAuthor = async () => {
         const apiCreateAuthor = await axios.post(`/api/Author/postCreateAuthor?nameAuthor=${newNameAuthor}`);
-        if (apiCreateAuthor?.errorCode === 0) {
+        if (apiCreateAuthor?.errorCode === 201) {
             toast.success(apiCreateAuthor?.errorMessage);
             setShowModalAddAuthor(false);
             setReload(!reload);
@@ -71,7 +71,7 @@ const AuthorManage = () => {
         // console.log(id)
 
         const apiEditAuthor = await axios.put(`/api/Author/putEditAuthor`, { id: idEditAuthor, nameAuthor: editNameAuthor });
-        if (apiEditAuthor?.errorCode === 0) {
+        if (apiEditAuthor?.errorCode === 201) {
             toast.success(apiEditAuthor?.errorMessage);
             setShowModalEditAuthor(false);
             setReload(!reload);
@@ -83,12 +83,12 @@ const AuthorManage = () => {
     const handleDelAuthor = async () => {
 
         const apiDelAuthor = await axios.delete(`api/Author/deleteAuthor?idAuthor=${idDelAuthor}`);
-        if (apiDelAuthor?.errorCode === 0) {
+        if (apiDelAuthor?.errorCode === 201) {
             toast.success(apiDelAuthor?.errorMessage);
             setShowModalDelAuthor(false);
             setReload(!reload);
         } else {
-            toast.error(apiDelAuthor?.errorCode);
+            toast.error(apiDelAuthor?.errorMessage);
         }
     }
 

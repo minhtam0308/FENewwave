@@ -32,7 +32,7 @@ const Library = () => {
             //     }, 250);
             // })
             const resultPage = await axios.get(`/api/Book/getPagedBook?PageSize=${pageSize}&PageNumber=${page}`);
-            if (resultPage?.errorCode === 0) {
+            if (resultPage?.errorCode === 201) {
                 setTotalPage(resultPage.data.totalPages)
                 setNumberPage(resultPage.data.totalPages);
                 // setListBook(pre => ([...pre, ...resultPage.data.items]));
@@ -97,7 +97,7 @@ const Library = () => {
         const getAllAuthor = async () => {
             try {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
-                if (allAuthor?.errorCode === 0) {
+                if (allAuthor?.errorCode === 201) {
 
                     // console.log(allAuthor?.em);
                     setListAuthor(allAuthor?.data);

@@ -52,7 +52,7 @@ const SignUp = () => {
                 password: pass,
                 name: name
             });
-            if (api?.errorCode === 0) {
+            if (api?.errorCode === 201) {
                 toast.success(api.errorMessage);
                 navigator('/login');
             } else {

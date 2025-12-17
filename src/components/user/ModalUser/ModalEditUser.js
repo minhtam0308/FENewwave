@@ -46,7 +46,7 @@ const ModalEditUser = (props) => {
                         "Content-Type": "multipart/form-data",
                     }
                 });
-                if (resultPutImage?.errorCode !== 0) {
+                if (resultPutImage?.errorCode !== 201) {
                     toast.error(resultPutImage?.em);
                     return;
                 }
@@ -59,7 +59,7 @@ const ModalEditUser = (props) => {
                     }
                 });
 
-                if (resultCreateImage?.errorCode !== 0) {
+                if (resultCreateImage?.errorCode !== 201) {
                     toast.error(resultCreateImage?.errorMessage);
                     return;
                 }
@@ -74,7 +74,7 @@ const ModalEditUser = (props) => {
             resultChangeUser = await axios.put('/api/User/putChangeUser', user);
 
         }
-        if (resultChangeUser?.errorCode === 0) {
+        if (resultChangeUser?.errorCode === 201) {
             toast.success(resultChangeUser?.errorMessage);
             handleClose();
             window.location.reload();
