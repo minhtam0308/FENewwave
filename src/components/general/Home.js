@@ -42,13 +42,13 @@ const Home = () => {
                 setUser(userTemp);
                 setUserContext(userTemp);
                 const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
-                if (imageUserData?.ec !== 1) {
-                    // console.log(imageUserData);
+                // console.log(imageUserData);
+                try {
                     setImageUser(URL.createObjectURL(imageUserData));
                     setImageContext(URL.createObjectURL(imageUserData));
-
+                } catch (e) {
+                    console.log(e);
                 }
-
             }
         }
         getImageUser();

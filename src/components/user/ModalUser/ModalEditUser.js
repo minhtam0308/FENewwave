@@ -31,6 +31,10 @@ const ModalEditUser = (props) => {
             toast.warning("Fill your name!");
             return;
         }
+        if (!user.age || user.age < 0) {
+            toast.warning("Your age is not valid!");
+            return;
+        }
         let resultCreateImage;
         if (fileImage) {
             if (user.urlUserImage !== '258d5e1a-ff57-4092-2a5d-08de2e43c05d') {

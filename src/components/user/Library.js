@@ -55,7 +55,12 @@ const Library = () => {
                 if (listImage[idImage]) {
                     URL.revokeObjectURL(listImage[idImage]);
                 }
-                setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+                try {
+
+                    setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+                } catch (e) {
+                    console.log(e);
+                }
 
 
             } catch (e) {

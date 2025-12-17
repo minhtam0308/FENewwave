@@ -4,7 +4,7 @@ import { getToken, setToekn } from "../context/contextToken";
 
 
 const instance = axios.create({
-  baseURL: 'https://localhost:7139'
+  baseURL: 'https://localhost:7118'
 });
 
 // Alter defaults after instance has been created
@@ -69,6 +69,7 @@ const handleRefreshToken = async (error) => {
             requestData = JSON.parse(error.config.data);
           }
           //send request
+
           response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
             requestData,
             {
@@ -77,7 +78,7 @@ const handleRefreshToken = async (error) => {
           );
 
         } else {
-          response = await instance[error.config.method]('https://localhost:7118' + error.config.url,
+          response = await instance[error.config.method](error.config.url,
             {
               // headers: { ...error.config.headers, Authorization: `Bearer ${getToken()}` },
               params: error.config.params
