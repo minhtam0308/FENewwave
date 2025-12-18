@@ -1,16 +1,26 @@
 import { useState } from "react";
 import { Button, Modal, Spinner } from "react-bootstrap";
+import axios from '../../../config/axiosConfig.js';
+import { toast } from "react-toastify";
 
 
 const ModalConfirmDelPro = (props) => {
 
-    const { show, setShow, delValue, imageDel, setReload, reload } = props;
+    const { show, setShow, delValue, imageDel, setReload, reload, idCart } = props;
     const [loading, setLoading] = useState(false);
     const handleClose = () => {
         setShow(false);
     }
-    const handleDelBook = () => {
-        console.log(delValue.id);
+    const handleDelBook = async () => {
+        // console.log(delValue);
+        const resultDelCartBook = await axios.delete(`/api/CartBook/deleteBookCart?idCart=${idCart}&idBook=${delValue.id}`);
+        if (resultDelCartBook?.errorCode === 201) {
+            toast.success(resultDelCartBook.errorMessage);
+            handleClose();
+            setReload(!reload);
+            return;
+        }
+        toast.error(resultDelCartBook.errorMessage);
     }
     return (<>
         <Modal

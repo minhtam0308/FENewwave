@@ -23,17 +23,21 @@ function App() {
   if (isFresh) {
     try {
       setInterval(async () => {
-        let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
-          {
-            withCredentials: true
+        if (isFresh) {
+
+          let resfreshToken = await axios.post(`/api/Auth/refresh-token`, {},
+            {
+              withCredentials: true
+            }
+          );
+          if (resfreshToken?.errorCode === 201) {
+            setToekn(resfreshToken.em);
+            localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
+            setUserContext(resfreshToken.data.user);
+          } else {
+            isFresh = false;
           }
-        );
-        if (resfreshToken?.errorCode === 201) {
-          setToekn(resfreshToken.em);
-          localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
-          setUserContext(resfreshToken.data.user);
-        } else {
-          isFresh = false;
+
         }
       }, 540000);
     } catch (e) {

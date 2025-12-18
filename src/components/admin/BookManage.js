@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import ConvertTosBase64Handle from "../../commonHandle/ConvertTosBase64Handle.js";
 import EditBookModal from "./ModalOfBookManage/EditBookModal.js";
 import DeleteBookModal from "./ModalOfBookManage/DeleteBookModal.js";
+import ImportBookModal from "./ModalOfBookManage/ImportBookModal.js";
 
 const BookManage = () => {
     const [listAuthor, setListAuthor] = useState();
@@ -26,6 +27,8 @@ const BookManage = () => {
 
     const [showModalDelBook, setShowModalDelBook] = useState(false);
     const [delValue, setDetDelVal] = useState({});
+
+    const [showModalImportBook, setShowModalImportBook] = useState(false);
 
 
     const [listBook, setListBook] = useState([]);
@@ -176,6 +179,13 @@ const BookManage = () => {
                         setShowModalCreateBook(true);
                     }}
                 ><i className={`fas fa-plus`}></i> Add Book</button>
+                <button
+                    className={`btn btn-primary`}
+                    style={{ padding: "11px" }}
+                    onClick={() => {
+                        setShowModalImportBook(true);
+                    }}
+                > Import file</button>
             </div>
             <table id={`${ClassBook.bookTable} mb-3`}>
                 <thead>
@@ -356,7 +366,12 @@ const BookManage = () => {
             reload={reload}
             setReload={setReload}
         />
-
+        <ImportBookModal
+            show={showModalImportBook}
+            setShow={setShowModalImportBook}
+            reload={reload}
+            setReload={setReload}
+        />
     </div>)
 }
 

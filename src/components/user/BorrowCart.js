@@ -19,12 +19,38 @@ const BorrowCart = () => {
 
 
     useEffect(() => {
+        const getImage = async (idImage) => {
+            try {
+                const resultImage = await axios.get(`/api/Image/getImage?idImage=${idImage}`, { responseType: "blob" });
+                // console.log(resultImage);
+                if (listImage[idImage]) {
+                    URL.revokeObjectURL(listImage[idImage]);
+                }
+                try {
+
+                    setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
+
+                } catch (e) {
+                    console.log(e);
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        }
+        const getAllImage = async (listBook) => {
+            for (let bookInfor of listBook) {
+                if (bookInfor.urlBook) {
+                    await getImage(bookInfor.urlBook);
+                }
+            }
+        }
         const getAllBook = async () => {
             try {
                 const allBook = await axios.get(`/api/Cart/getAllCart`);
                 // console.log("allbook", allBook);
                 if (allBook?.errorCode === 201) {
                     setListBook(allBook?.data.listBook);
+                    getAllImage(allBook?.data.listBook);
                     setIdCart(allBook?.data.idCart);
                     return;
                 }
@@ -38,35 +64,24 @@ const BorrowCart = () => {
 
         getAllBook();
     }, [reload]);
-    useEffect(() => {
-        const getImage = async (idImage) => {
-            try {
-                const resultImage = await axios.get(`/api/Image/getImage?idImage=${idImage}`, { responseType: "blob" });
-                // console.log(resultImage);
-                if (listImage[idImage]) {
-                    URL.revokeObjectURL(listImage[idImage]);
-                }
-                try {
 
-                    setListImage(pre => ({ ...pre, [idImage]: URL.createObjectURL(resultImage) }));
-                } catch (e) {
-                    console.log(e);
-                }
-            } catch (e) {
-                console.log(e);
-            }
-        }
-        const getAllImage = async () => {
-            for (let bookInfor of listBook) {
-                if (bookInfor.urlBook) {
-                    await getImage(bookInfor.urlBook);
-                }
-            }
-        }
-        getAllImage();
 
-    }, [listBook])
-    // console.log("borrowcart");
+    const handleChangeQuantity = async (bookChangeQuantity) => {
+        //put changhe quantity cart
+        const resPutChangeQuantityBook = await axios.put(`/api/CartBook/putChangeQuantityCartBook`, {
+            idCart: idCart,
+            idBook: bookChangeQuantity.id,
+            quantity: bookChangeQuantity.quantity
+        });
+        if (resPutChangeQuantityBook?.errorCode !== 201) {
+            toast.error(resPutChangeQuantityBook.errorMessage);
+            setReload(!reload);
+            return;
+        }
+
+    }
+
+    console.log(listBook);
     // console.log(listImage)
 
     return (
@@ -88,7 +103,28 @@ const BorrowCart = () => {
                                         <div className="flex-grow-1">
                                             <h5 className="card-title text-white mb-2">{val.title}</h5>
                                             <p className="card-text mb-1"><i className="bi bi-person me-2"></i><strong>Author:</strong> {val.nameAuthor}</p>
-                                            <p className="card-text mb-1"><i className="bi bi-person me-2"></i><strong>Quantity:</strong> {val.quantity}</p>
+                                            <p className="card-text mb-1"><i className="bi bi-person me-2"></i><strong>Quantity:</strong>
+                                                <input
+                                                    value={val.quantity}
+                                                    type='number'
+                                                    style={{ width: "100px", textAlign: "center" }}
+                                                    onBlur={() => {
+                                                        handleChangeQuantity(val);
+                                                    }}
+                                                    onChange={(event) => {
+                                                        if (event.target.value > 0 && event.target.value < val.availableCopies) {
+                                                            setListBook(pre =>
+                                                                pre.map((book, indexBook) => {
+                                                                    if (indexBook === index) {
+                                                                        book.quantity = event.target.value;
+                                                                        return book;
+                                                                    }
+                                                                    return book;
+                                                                }))
+                                                        }
+                                                    }}
+                                                />
+                                            </p>
                                         </div>
                                         <button
                                             className={`btn ${classBorrowCart.btnDangerModern} btn-sm`}
