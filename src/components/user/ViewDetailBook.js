@@ -43,7 +43,7 @@ const ViewDetailBook = (props) => {
                                 </ul>
                                 <div className="d-flex gap-2">
                                     <button className={`btn btn-primary ${ClassView.btnCustom} px-4`}><i className="bi bi-cart-plus"></i> Add to Cart</button>
-                                    <button className={`btn btn-outline-info ${ClassView.btnCustom} px-4`}><i className="bi bi-eye"></i> Read Sample</button>
+                                    <button className={`btn btn-outline-info ${ClassView.btnCustom} px-4`}><i className="bi bi-eye"></i> Borrow now</button>
                                 </div>
                             </div>
                         </div>

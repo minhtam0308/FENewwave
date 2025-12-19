@@ -164,7 +164,8 @@ const BorrowCart = () => {
             <ModalConfirmBorrowBook
                 show={showModalConfirmBorrow}
                 setShow={setShowModalConfirmBorrow}
-
+                listBook={listBook}
+                listImage={listImage}
             />
             <ModalConfirmDelPro
                 show={showModalDelBook}

@@ -9,10 +9,34 @@ const ImportBookModal = (props) => {
         setShow(false);
     }
     const [loading, setLoading] = useState(false);
+    const [excelFile, setExcelFile] = useState();
 
-    const handleDelBook = async () => {
-
-
+    const handleImportFile = async () => {
+        if (excelFile) {
+            let form = new FormData();
+            form.append("file", excelFile);
+            setLoading(true);
+            const resultImport = await axios.post(`/api/Book/addByExcel`, form, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            });
+            if (resultImport?.errorCode === 201) {
+                toast.success(resultImport?.errorMessage);
+                setLoading(false);
+                handleClose();
+                setReload(!reload);
+                return;
+            } else {
+                toast.error(resultImport?.errorMessage);
+                setLoading(false);
+                return;
+            }
+        } else {
+            toast.warning("Import your file");
+            console.log(excelFile);
+            return;
+        }
     }
     return (
         <>
@@ -26,11 +50,20 @@ const ImportBookModal = (props) => {
                     <Modal.Title>Import File Excel</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div class="card-body">
+                    <div className="card-body">
                         <form id="uploadForm">
-                            <div class="mb-3">
-                                <label for="excelFile" class="form-label">Chọn file Excel (.xlsx hoặc .xls)</label>
-                                <input type="file" class="form-control" id="excelFile" accept=".xlsx,.xls" required />
+                            <div className="mb-3">
+                                <label for="excelFile" className="form-label">Chọn file Excel (.xlsx hoặc .xls)</label>
+                                <input
+                                    type="file"
+                                    className="form-control"
+                                    id="excelFile"
+                                    accept=".xlsx,.xls"
+                                    required
+                                    onChange={(event) => {
+                                        setExcelFile(event.target.files[0])
+                                    }}
+                                />
                             </div>
                         </form>
                     </div>
@@ -45,7 +78,7 @@ const ImportBookModal = (props) => {
                     <Button
                         variant="success"
                         disabled={loading}
-                        onClick={handleDelBook}
+                        onClick={handleImportFile}
                     >
                         {loading ? (
                             <>

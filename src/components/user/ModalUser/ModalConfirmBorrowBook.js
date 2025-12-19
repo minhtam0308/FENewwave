@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Button, Modal, Spinner } from "react-bootstrap";
+import { Button, ListGroup, Modal, Spinner } from "react-bootstrap";
 import { useUserContext } from "../../../context/UserContext";
 import { toast } from "react-toastify";
 import axios from '../../../config/axiosConfig.js';
 
-const ModalConfirmBorrowBook = ({ show, setShow }) => {
+const ModalConfirmBorrowBook = ({ show, setShow, listBook, listImage }) => {
 
     const [loading, setLoading] = useState(false);
     const handleClose = () => {
@@ -33,34 +33,29 @@ const ModalConfirmBorrowBook = ({ show, setShow }) => {
                             </tr>
                         </thead>
                         <tbody id="cartItems">
-                            <tr>
-                                <td>
-                                    <div>
-                                        <img alt="The Great Gatsby" className="img-fluid"
-                                            style={{
-                                                height: "50px",
-                                                maxWidth: "50px",
-                                                objectFit: "cover"
-                                            }} />
-                                    </div>
-                                </td>
-                                <td>The Great Gatsby</td>
-                                <td>F. Scott Fitzgerald</td>
+                            {listBook && listBook.map((val, item) => {
+                                return (<tr>
+                                    <td>
+                                        <div>
+                                            <img alt="The Great Gatsby" className="img-fluid"
+                                                style={{
+                                                    height: "50px",
+                                                    maxWidth: "50px",
+                                                    objectFit: "cover"
+                                                }}
+                                                src={`${listImage[val.urlBook]}`}
+                                            />
+                                        </div>
+                                    </td>
 
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td><img alt="The Great Gatsby" className="img-fluid" style={{ maxWidth: "50px" }} /></td>
-                                <td>The Great Gatsby</td>
 
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <td><img alt="The Great Gatsby" className="img-fluid" style={{ maxWidth: "50px" }} /></td>
-                                <td>The Great Gatsby</td>
-                                <td>F. Scott Fitzgerald</td>
-                                <td>1</td>
-                            </tr>
+                                    <td>{val.title}</td>
+                                    <td>{val.nameAuthor}</td>
+
+                                    <td>{val.quantity}</td>
+                                </tr>)
+
+                            })}
 
                         </tbody>
                     </table>

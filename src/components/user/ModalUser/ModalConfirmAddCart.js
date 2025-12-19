@@ -38,7 +38,7 @@ const ModalConfirmAddCart = ({ show, setShow, productInfor, image }) => {
             keyboard={false}
         >
             <Modal.Header closeButton>
-                <Modal.Title>Add to cart</Modal.Title>
+                <Modal.Title>About this book</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <div className="modal-body">
@@ -79,6 +79,11 @@ const ModalConfirmAddCart = ({ show, setShow, productInfor, image }) => {
                     handleClose();
                 }}>
                     Close
+                </Button>
+                <Button variant="primary" onClick={() => {
+                    handleClose();
+                }}>
+                    Borrow now
                 </Button>
                 <Button
                     variant="primary"
