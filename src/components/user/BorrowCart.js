@@ -18,6 +18,7 @@ const BorrowCart = () => {
     const imageDel = delValue.urlBook ? listImage[delValue.urlBook] : "";
 
 
+
     useEffect(() => {
         const getImage = async (idImage) => {
             try {
@@ -81,7 +82,7 @@ const BorrowCart = () => {
 
     }
 
-    console.log(listBook);
+    // console.log(listBook);
     // console.log(listImage)
 
     return (
@@ -140,8 +141,6 @@ const BorrowCart = () => {
                         )
                     })}
 
-
-
                 </div>
 
                 <div className="row mt-5">
@@ -166,6 +165,9 @@ const BorrowCart = () => {
                 setShow={setShowModalConfirmBorrow}
                 listBook={listBook}
                 listImage={listImage}
+                key={"cart"}
+                reload={reload}
+                setReload={setReload}
             />
             <ModalConfirmDelPro
                 show={showModalDelBook}
@@ -176,7 +178,6 @@ const BorrowCart = () => {
                 imageDel={imageDel}
                 idCart={idCart}
             />
-
 
         </>
     )

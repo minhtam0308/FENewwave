@@ -1,14 +1,55 @@
 import { useEffect, useState } from "react";
 import { Button, ListGroup, Modal, Spinner } from "react-bootstrap";
-import { useUserContext } from "../../../context/UserContext";
 import { toast } from "react-toastify";
 import axios from '../../../config/axiosConfig.js';
 
-const ModalConfirmBorrowBook = ({ show, setShow, listBook, listImage }) => {
+const ModalConfirmBorrowBook = ({ show, setShow, listBook, listImage, key, reload, setReload }) => {
 
     const [loading, setLoading] = useState(false);
+    const [dateBorrow, setDateBorrow] = useState(new Date().toISOString().split("T")[0]);
+    const [numberBorrowDays, setNumberBorrowDays] = useState(1);
+
     const handleClose = () => {
         setShow(false);
+    }
+
+    const listBooks = listBook?.map((val) => {
+        return { idBook: val.id, quantity: val.quantity }
+    })
+
+    const handleConfirmBorrow = async () => {
+        if (!listBook || listBook.length === 0) {
+            toast.warning("You have no book to borrow!");
+            return;
+        }
+
+        if (new Date(dateBorrow) < new Date()) {
+            toast.warning("Borrow date is not valid!");
+            return;
+        }
+
+        if (numberBorrowDays < 1) {
+            toast.warning("Number date borrow is not valid!");
+            return;
+        }
+
+        const resultBorrowBook = await axios.post(`/api/BorrowBooks/borrow-book`, {
+            listBooks,
+            expiresBorrow: dateBorrow,
+            numberBorrowDate: numberBorrowDays
+        });
+        if (resultBorrowBook.errorCode === 201) {
+            toast.success(resultBorrowBook.errorMessage);
+            handleClose();
+
+            if (key === "cart") {
+                setReload(!reload);
+            }
+            return;
+        } else {
+            toast.error(resultBorrowBook.errorMessage);
+            handleClose();
+        }
     }
     return (<>
         <Modal
@@ -62,11 +103,28 @@ const ModalConfirmBorrowBook = ({ show, setShow, listBook, listImage }) => {
                     <hr />
                     <div className="mb-3">
                         <label for="borrowDate" className="form-label">Borrow Date</label>
-                        <input type="date" className="form-control" id="borrowDate" value="2023-10-01" />
+                        <input
+                            type="date"
+                            className="form-control"
+                            id="borrowDate"
+                            value={dateBorrow}
+                            onChange={(event) => {
+                                // console.log(event.target.value);
+                                setDateBorrow(event.target.value);
+                            }}
+                        />
                     </div>
                     <div className="mb-3">
                         <label for="returnDate" className="form-label">number of borrowing days</label>
-                        <input type="number" className="form-control" id="returnDate" />
+                        <input
+                            type="number"
+                            className="form-control"
+                            id="returnDate"
+                            value={numberBorrowDays}
+                            onChange={(event) => {
+                                setNumberBorrowDays(event.target.value);
+                            }}
+                        />
                     </div>
                 </div>
             </Modal.Body>
@@ -79,7 +137,9 @@ const ModalConfirmBorrowBook = ({ show, setShow, listBook, listImage }) => {
                 <Button
                     variant="primary"
                     disabled={loading}
-                // onClick={ }
+                    onClick={() => {
+                        handleConfirmBorrow();
+                    }}
                 >
                     {loading ? (
                         <>

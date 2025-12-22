@@ -157,6 +157,32 @@ const BookManage = () => {
             return;
         }
     }
+
+    const handleExportFile = async () => {
+        const blob = await axios.get(`/api/Book/export-excel`, {
+            responseType: "blob",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "Books.xlsx";
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    }
+
+    const handleExportTemplateFile = async () => {
+        const blob = await axios.get(`/api/Book/export-template`, {
+            responseType: "blob",
+        });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "BookTemplate.xlsx";
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    }
     // console.log(listBook);
     return (<div className={`${ClassBook.container} container mt-5 mb-3`}>
         <div className={`${ClassBook.container} container`}>
@@ -186,6 +212,20 @@ const BookManage = () => {
                         setShowModalImportBook(true);
                     }}
                 > Import file</button>
+                <button
+                    className={`btn btn-primary`}
+                    style={{ padding: "11px" }}
+                    onClick={() => {
+                        handleExportFile();
+                    }}
+                > Export file</button>
+                <button
+                    className={`btn btn-primary`}
+                    style={{ padding: "11px" }}
+                    onClick={() => {
+                        handleExportTemplateFile();
+                    }}
+                > Export Template</button>
             </div>
             <table id={`${ClassBook.bookTable} mb-3`}>
                 <thead>
