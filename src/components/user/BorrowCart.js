@@ -23,7 +23,7 @@ const BorrowCart = () => {
             try {
                 const allBook = await axios.get(`/api/Cart/getAllCart`);
                 // console.log("allbook", allBook);
-                if (allBook?.errorCode === 0) {
+                if (allBook?.errorCode === 201) {
                     setListBook(allBook?.data.listBook);
                     setIdCart(allBook?.data.idCart);
                     return;

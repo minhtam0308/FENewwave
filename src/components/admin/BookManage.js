@@ -65,7 +65,7 @@ const BookManage = () => {
             try {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
                 // console.log("auythor", allAuthor);
-                if (allAuthor?.errorCode === 0) {
+                if (allAuthor?.errorCode === 201) {
                     setListAuthor(allAuthor?.data);
                     setAuthor(allAuthor.data[0]?.id);
                     return;
@@ -124,7 +124,7 @@ const BookManage = () => {
                     "Content-Type": "multipart/form-data",
                 }
             });
-            if (resultCreateImage?.errorCode !== 0) {
+            if (resultCreateImage?.errorCode !== 201) {
                 toast.error(resultCreateImage?.errorMessage);
                 return;
             } else {
@@ -140,7 +140,7 @@ const BookManage = () => {
             urlBook: UrlBook
         }
         const resultCreateImage = await axios.post(`/api/Book/postCreateBook`, bookinfor);
-        if (resultCreateImage?.errorCode === 0) {
+        if (resultCreateImage?.errorCode === 201) {
             toast.success(resultCreateImage?.errorMessage);
             handleCloseModalCreateBook();
             setReload(!reload);

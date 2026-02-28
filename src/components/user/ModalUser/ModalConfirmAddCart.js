@@ -22,7 +22,7 @@ const ModalConfirmAddCart = ({ show, setShow, productInfor, image }) => {
             idBook: productInfor.id,
             quantity: quantity
         })
-        if (resAddToCart?.errorCode === 0) {
+        if (resAddToCart?.errorCode === 201) {
             toast.success(resAddToCart.errorMessage);
         } else {
             toast.error(resAddToCart?.errorMessage);

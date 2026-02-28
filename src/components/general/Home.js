@@ -21,7 +21,7 @@ const Home = () => {
             const resultLogut = await axios.get('/api/Auth/logout', {
                 withCredentials: true
             });
-            if (resultLogut?.errorCode === 0) {
+            if (resultLogut?.errorCode === 201) {
                 localStorage.removeItem("user");
                 setUser(null);
                 setUserContext(null);
@@ -42,7 +42,7 @@ const Home = () => {
                 setUser(userTemp);
                 setUserContext(userTemp);
                 const imageUserData = await axios.get(`/api/Image/getImage?idImage=${userTemp.urlUserImage}`, { responseType: "blob" });
-                if (imageUserData?.ec !== 1) {
+                if (imageUserData?.errorCode !== 1) {
                     // console.log(imageUserData);
                     setImageUser(URL.createObjectURL(imageUserData));
                     setImageContext(URL.createObjectURL(imageUserData));
