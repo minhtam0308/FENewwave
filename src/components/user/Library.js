@@ -94,11 +94,11 @@ const Library = () => {
                 const allAuthor = await axios.get(`/api/Author/getAllAuthor`);
                 if (allAuthor?.errorCode === 0) {
 
-                    // console.log(allAuthor?.em);
+                    // console.log(allAuthor?.errorMessage);
                     setListAuthor(allAuthor?.data);
                     return;
                 }
-                toast.error(allAuthor?.em);
+                toast.error(allAuthor?.errorMessage);
             } catch (e) {
                 console.log(e);
             }
@@ -222,7 +222,7 @@ const Library = () => {
                         }
 
                         {/* {continueGetPage && <div ref={loadRef} className={classLybrary.spinner}></div>} */}
-                        {(bookFilter && bookFilter.length === pageSize) || (!bookFilter && listBook.length === 6) &&
+                        {(bookFilter && bookFilter.length === pageSize) || (!bookFilter) &&
                             <nav aria-label="Page navigation">
                                 <ul className="pagination justify-content-center">
                                     <li className={`page-item ${page === 1 ? "disable" : ""}`}>

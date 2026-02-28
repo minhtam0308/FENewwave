@@ -50,7 +50,7 @@ const BookManage = () => {
             try {
                 const allBook = await axios.get(`/api/Book/getAllBook`);
                 // console.log("allbook", allBook);
-                if (allBook?.errorCode === 0) {
+                if (allBook?.errorCode === 201) {
                     setListBook(allBook?.data);
                     return;
                 }

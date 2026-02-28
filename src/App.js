@@ -29,7 +29,7 @@ function App() {
           }
         );
         if (resfreshToken?.errorCode === 0) {
-          setToekn(resfreshToken.em);
+          setToekn(resfreshToken.errorMessage);
           localStorage.setItem("user", JSON.stringify(resfreshToken.data.user));
           setUserContext(resfreshToken.data.user);
         } else {

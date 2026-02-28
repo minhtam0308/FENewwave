@@ -29,7 +29,7 @@ const ProfileUser = () => {
 
                             <div className={`${classView.infoItem}`}>
                                 <i className="bi bi-envelope-fill"></i>
-                                <p id={`${classView.userEmail}`}><strong>Email:</strong>{user?.email}</p>
+                                <p id={`${classView.userEmail}`}><strong>Email:</strong>{user?.errorMessageail}</p>
                             </div>
                             <div className={`${classView.infoItem}`}>
                                 <i className="bi bi-calendar-event-fill"></i>

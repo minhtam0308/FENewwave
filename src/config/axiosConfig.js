@@ -4,7 +4,7 @@ import { getToken, setToekn } from "../context/contextToken";
 
 
 const instance = axios.create({
-  baseURL: 'https://localhost:7139'
+  baseURL: 'https://localhost:7118'
 });
 
 // Alter defaults after instance has been created
@@ -31,7 +31,7 @@ instance.interceptors.response.use(function (response) {
     const againAPI = await handleRefreshToken(error);
     return againAPI;
   }
-  return Promise.resolve({ ec: 1, em: error.response?.data?.em || error?.message, status: error?.response?.status });
+  return Promise.resolve(error?.response?.data);
 });
 
 const handleRefreshToken = async (error) => {

@@ -42,8 +42,8 @@ const ModalEditUser = (props) => {
                         "Content-Type": "multipart/form-data",
                     }
                 });
-                if (resultPutImage?.ec !== 0) {
-                    toast.error(resultPutImage?.em);
+                if (resultPutImage?.errorCode !== 0) {
+                    toast.error(resultPutImage?.errorMessage);
                     return;
                 }
             } else {
@@ -55,8 +55,8 @@ const ModalEditUser = (props) => {
                     }
                 });
 
-                if (resultCreateImage?.ec !== 0) {
-                    toast.error(resultCreateImage?.em);
+                if (resultCreateImage?.errorCode !== 0) {
+                    toast.error(resultCreateImage?.errorMessage);
                     return;
                 }
             }
@@ -64,19 +64,19 @@ const ModalEditUser = (props) => {
 
         let resultChangeUser;
         if (resultCreateImage) {
-            resultChangeUser = await axios.put('/api/User/putChangeUser', { ...user, urlUserImage: resultCreateImage.em });
+            resultChangeUser = await axios.put('/api/User/putChangeUser', { ...user, urlUserImage: resultCreateImage.data });
 
         } else {
             resultChangeUser = await axios.put('/api/User/putChangeUser', user);
 
         }
-        if (resultChangeUser?.ec === 0) {
-            toast.success(resultChangeUser?.em);
+        if (resultChangeUser?.errorCode === 0) {
+            toast.success(resultChangeUser?.errorMessage);
             handleClose();
             window.location.reload();
             return;
         }
-        toast.error(resultChangeUser?.em);
+        toast.error(resultChangeUser?.errorMessage);
         return;
     }
 
@@ -123,7 +123,7 @@ const ModalEditUser = (props) => {
                     <div className="mb-3">
                         <label for="editEmail" className="form-label">Email</label>
                         <input type="email" className="form-control" id="editEmail" disabled
-                            value={user?.email} />
+                            value={user?.errorMessageail} />
                     </div>
                     <div className="mb-3">
                         <label for="editAge" className="form-label">Age</label>
