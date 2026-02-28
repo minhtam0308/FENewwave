@@ -39,7 +39,6 @@ const BookManage = () => {
     const handleCloseModalCreateBook = () => {
         setShowModalCreateBook(false);
         setTitle("");
-        setAuthor("");
         setDes("");
         setTotal();
         setImage("");
